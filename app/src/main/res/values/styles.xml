@@ -29,4 +29,50 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="signUpEditTextStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorAccentMatcher</item>
+        <item name="android:paddingLeft">@dimen/small_padding</item>
+        <item name="android:paddingRight">@dimen/small_padding</item>
+        <item name="android:layout_marginBottom">@dimen/small_padding</item>
+        <item name="android:layout_marginTop">@dimen/small_padding</item>
+        <item name="android:layout_marginLeft">@dimen/default_padding</item>
+        <item name="android:layout_marginRight">@dimen/default_padding</item>
+    </style>
+
+    <style name="signUpButton">
+        <item name="android:background">@drawable/button_light_green_onclick</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/mdtp_white</item>
+        <item name="android:paddingLeft">@dimen/small_padding</item>
+        <item name="android:paddingRight">@dimen/small_padding</item>
+        <item name="android:layout_margin">@dimen/default_padding</item>
+    </style>
+
+    <style name="loginButtonStyle">
+        <item name="android:background">@drawable/button_green_onclick</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/mdtp_white</item>
+        <item name="android:paddingLeft">@dimen/small_padding</item>
+        <item name="android:paddingRight">@dimen/small_padding</item>
+        <item name="android:layout_margin">@dimen/default_padding</item>
+        <item name="android:bottomLeftRadius">@dimen/small_padding</item>
+        <item name="android:bottomRightRadius">@dimen/small_padding</item>
+        <item name="android:topLeftRadius">@dimen/small_padding</item>
+        <item name="android:topRightRadius">@dimen/small_padding</item>
+    </style>
+
+    <style name="lightButtonStyle">
+        <item name="android:background">@drawable/button_light_green_onclick</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/mdtp_white</item>
+        <item name="android:paddingLeft">@dimen/small_padding</item>
+        <item name="android:paddingRight">@dimen/small_padding</item>
+        <item name="android:layout_margin">@dimen/default_padding</item>
+        <item name="android:bottomLeftRadius">@dimen/small_padding</item>
+        <item name="android:bottomRightRadius">@dimen/small_padding</item>
+        <item name="android:topLeftRadius">@dimen/small_padding</item>
+        <item name="android:topRightRadius">@dimen/small_padding</item>
+    </style>
+
 </resources>

@@ -6,4 +6,16 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Padding -->
+    <dimen name="small_padding">5dp</dimen>
+    <dimen name="default_padding">10dp</dimen>
+    <dimen name="double_padding">20dp</dimen>
+    <dimen name="triple_padding">30dp</dimen>
+    <dimen name="quad_padding">40dp</dimen>
+    <dimen name="penta_padding">50dp</dimen>
+    <dimen name="hexa_padding">60dp</dimen>
+
+    <dimen name="food_category_font">50sp</dimen>
+    <dimen name="food_category_info_font">11sp</dimen>
 </resources>

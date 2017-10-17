@@ -1,25 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_sub_food_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="5dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="5dp"
-    tools:context="abish.veettusorudemo.SubFoodListActivity">
+    tools:context="abish.veettusorudemo.views.SubFoodListActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <include layout="@layout/action_bar" />
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_above="@+id/bt_continue"
         android:id="@+id/rv_sub_food_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <Button
-        android:text="Place Order"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/bt_continue"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_below="@+id/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/small_padding"
+        android:layout_marginRight="@dimen/small_padding">
+
+        <Button
+            android:id="@+id/bt_place_order"
+            style="@style/lightButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_place_order" />
+
+        <Button
+            android:id="@+id/bt_continue"
+            style="@style/lightButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_padding"
+            android:layout_marginStart="@dimen/default_padding"
+            android:layout_weight="1"
+            android:text="@string/order_more" />
+    </LinearLayout>
 
 </RelativeLayout>

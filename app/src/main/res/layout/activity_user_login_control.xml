@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="abish.veettusorudemo.views.UserLoginControlActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <include layout="@layout/action_bar" />
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/input_layout_et_password"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_email"
+            style="@style/signUpEditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_email"
+            android:inputType="textEmailAddress" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/input_layout_et_password">
+
+        <EditText
+            android:id="@+id/et_mobile"
+            style="@style/signUpEditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_mobile"
+            android:inputType="number"
+            android:maxLength="10" />
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/iv_switch_mobile_email"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_above="@+id/input_layout_et_password"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/double_padding"
+        android:background="@color/colorAccentLight"
+        android:contentDescription="@null"
+        android:onClick="switchImage"
+        android:scaleType="fitCenter"
+        android:src="@drawable/phone" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/default_padding">
+
+        <EditText
+            android:id="@+id/et_password"
+            style="@style/signUpEditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_password"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/bt_login"
+        style="@style/loginButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_layout_et_password"
+        android:layout_centerHorizontal="true"
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp"
+        android:onClick="userLogin"
+        android:paddingEnd="@dimen/triple_padding"
+        android:paddingLeft="@dimen/triple_padding"
+        android:paddingRight="@dimen/triple_padding"
+        android:paddingStart="@dimen/triple_padding"
+        android:text="@string/text_login"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_sign_up"
+        android:layout_below="@+id/bt_login"
+        android:layout_marginEnd="@dimen/small_padding"
+        android:layout_marginRight="@dimen/small_padding"
+        android:layout_toLeftOf="@+id/tv_sign_up"
+        android:layout_toStartOf="@+id/tv_sign_up"
+        android:text="@string/text_signup_account"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_sign_up"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/bt_login"
+        android:drawableEnd="@drawable/ic_arrow_right"
+        android:drawableRight="@drawable/ic_arrow_right"
+        android:gravity="center"
+        android:onClick="goToSignUp"
+        android:padding="@dimen/small_padding"
+        android:paddingEnd="@dimen/small_padding"
+        android:paddingLeft="@dimen/double_padding"
+        android:paddingRight="@dimen/small_padding"
+        android:paddingStart="@dimen/double_padding"
+        android:text="@string/title_sign_up" />
+
+    <TextView
+        android:id="@+id/tv_skip_login"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_sign_up"
+        android:layout_centerHorizontal="true"
+        android:onClick="skipLogin"
+        android:padding="@dimen/small_padding"
+        android:text="@string/text_skip" />
+
+</RelativeLayout>

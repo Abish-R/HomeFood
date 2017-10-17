@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <ImageView
+        android:layout_width="@dimen/quad_padding"
+        android:layout_height="@dimen/quad_padding"
+        android:layout_marginBottom="@dimen/double_padding"
+        android:contentDescription="@null"
+        android:src="@drawable/track" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:background="@color/colorAccent"
+        android:padding="3dp">
+
+        <Spinner
+            android:id="@+id/spin_location"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/quad_padding"
+            android:background="@drawable/spinner_background"
+            android:gravity="center"
+            android:spinnerMode="dropdown" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/bt_continue"
+        style="@style/loginButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/double_padding"
+        android:paddingLeft="@dimen/double_padding"
+        android:paddingRight="@dimen/double_padding"
+        android:paddingStart="@dimen/double_padding"
+        android:text="@string/text_check_food" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/double_padding"
+        android:text="@string/text_location_not_avail_info" />
+
+    <TextView
+        android:id="@+id/tv_contact_us"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:drawableEnd="@android:drawable/stat_sys_vp_phone_call"
+        android:drawablePadding="@dimen/small_padding"
+        android:drawableRight="@android:drawable/stat_sys_vp_phone_call"
+        android:onClick="onClickContactUs"
+        android:text="@string/contact_us" />
+</LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_food_category_selection"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="abish.veettusorudemo.views.FoodCategorySelectionActivity">
+
+    <Button
+        android:id="@+id/bt_food_category"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/mdtp_accent_color"
+        android:textColor="#FFF"
+        android:textSize="@dimen/food_category_font"
+        android:textStyle="bold|italic"
+        tools:text="PARTY" />
+
+    <TextView
+        android:id="@+id/tv_category_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="#30000009"
+        android:gravity="center"
+        android:padding="@dimen/small_padding"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/food_category_info_font"
+        tools:text="*For party, make your order before 7AM of that same day" />
+
+</LinearLayout>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccentLight"
+    android:orientation="vertical"
+    tools:context="abish.veettusorudemo.views.SignUpActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <include layout="@layout/action_bar" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/layout_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_name"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_name"
+                android:inputType="text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_name">
+
+            <EditText
+                android:id="@+id/et_phone"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_mobile"
+                android:inputType="phone" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_phone">
+
+            <EditText
+                android:id="@+id/et_email"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_email"
+                android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/layout_password"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/input_layout_email"-->
+        <!--android:layout_marginBottom="@dimen/default_padding"-->
+        <!--android:background="@color/colorAccentTint">-->
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_email"
+            android:layout_marginTop="@dimen/double_padding">
+
+            <EditText
+                android:id="@+id/et_password"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_password"
+                android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_et_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_et_password">
+
+            <EditText
+                android:id="@+id/et_confirm_password"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_confirm_password"
+                android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+        <!--</RelativeLayout>-->
+
+        <Button
+            android:id="@+id/bt_continue"
+            style="@style/loginButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_et_confirm_password"
+            android:layout_centerHorizontal="true"
+            android:onClick="continueCreation"
+            android:paddingEnd="@dimen/triple_padding"
+            android:paddingLeft="@dimen/triple_padding"
+            android:paddingRight="@dimen/triple_padding"
+            android:paddingStart="@dimen/triple_padding"
+            android:text="@string/text_continue" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/default_padding"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_street"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_street"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_door_street" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_street">
+
+            <EditText
+                android:id="@+id/et_city"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_area_city" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_city">
+
+            <EditText
+                android:id="@+id/et_state"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_state" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_pinCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_state">
+
+            <EditText
+                android:id="@+id/et_pinCode"
+                style="@style/signUpEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_pinCode" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_pinCode"
+            android:gravity="center"
+            android:text="@string/country"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/layout_address_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_country"
+            android:layout_marginBottom="@dimen/default_padding"
+            android:gravity="center">
+
+            <CheckBox
+                android:id="@+id/cb_permanent_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="checkAddress"
+                android:padding="@dimen/small_padding"
+                android:text="@string/text_permanent" />
+
+            <CheckBox
+                android:id="@+id/cb_temporary_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/default_padding"
+                android:layout_marginStart="@dimen/default_padding"
+                android:layout_toEndOf="@id/cb_permanent_address"
+                android:layout_toRightOf="@id/cb_permanent_address"
+                android:onClick="checkAddress"
+                android:text="@string/text_temporary" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/bt_create_account"
+            style="@style/loginButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_address_type"
+            android:onClick="createAccount"
+            android:text="@string/text_create_account" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/bt_logon"
+            android:layout_marginEnd="@dimen/small_padding"
+            android:layout_marginRight="@dimen/small_padding"
+            android:layout_toLeftOf="@+id/bt_logon"
+            android:layout_toStartOf="@+id/bt_logon"
+            android:text="@string/text_sign_up_info"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/bt_logon"
+            style="@style/lightButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:onClick="goToLogin"
+            android:paddingEnd="@dimen/small_padding"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingRight="@dimen/small_padding"
+            android:paddingStart="@dimen/default_padding"
+            android:text="@string/text_login" />
+
+    </RelativeLayout>
+
+</LinearLayout>
