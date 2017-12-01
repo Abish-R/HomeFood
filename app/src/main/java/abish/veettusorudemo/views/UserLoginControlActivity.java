@@ -18,6 +18,7 @@ import com.android.volley.VolleyLog;
 
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
+import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
@@ -27,6 +28,10 @@ import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.displayLoader;
 import static abish.veettusorudemo.Utils.hideLoader;
+
+//import abish.veettusorudemo.constants.UrlConstants;
+
+//import abish.veettusorudemo.constants.UrlConstants;
 
 public class UserLoginControlActivity extends AppCompatActivity {
 
@@ -63,12 +68,19 @@ public class UserLoginControlActivity extends AppCompatActivity {
     @Bind(R.id.title)
     TextView toolbarTitle;
 
+    private int loginTransition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login_control);
         ButterKnife.bind(this);
         setTitle();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            loginTransition = extras.getInt(Constants.LOGIN_TRANSITION_DECIDER);
+        }
     }
 
     private void setTitle() {
@@ -92,7 +104,7 @@ public class UserLoginControlActivity extends AppCompatActivity {
                 etEmail.setError("Enter correct username");
                 throw new Exception("Check username");
             }
-            if (etPassword.getText().length() < 5 || etPassword.getText().toString().contains(" ")) {
+            if (etPassword.getText().length() < 3 || etPassword.getText().toString().contains(" ")) {
                 etPassword.setError("Enter correct password");
                 throw new Exception("Check password");
             }
@@ -144,8 +156,9 @@ public class UserLoginControlActivity extends AppCompatActivity {
 
     private void goForLogin(String username, String password, String deviceToken) {
         String url = UrlConstants.GET_LOGIN_URL + UrlConstants.LOGIN_PARAM_USERNAME + username
-                + UrlConstants.LOGIN_PARAM_PASSWORD + password + UrlConstants.LOGIN_PARAM_DEVICE_TOKEN + deviceToken;
-        displayLoader(this, "Receiving Food List...");
+                + UrlConstants.LOGIN_PARAM_PASSWORD + password +
+                UrlConstants.LOGIN_PARAM_DEVICE_TOKEN + Utils.getSavedUserDetail(this, Constants.FCM_TOKEN);
+        displayLoader(this, "Logging in...");
 
         GsonRequest request = new GsonRequest<LoginResponse>(url, null,
                 LoginResponse.class, null, new Response.Listener<LoginResponse>() {
@@ -153,7 +166,12 @@ public class UserLoginControlActivity extends AppCompatActivity {
             public void onResponse(LoginResponse response) {
                 Log.d("Food categories Ok", response.toString());
                 if (response.getResponse() != null && response.getResponse().equals("1")) {
-                    startActivity(new Intent(UserLoginControlActivity.this, LocationSelectionActivity.class));
+                    Utils.saveUser(response, UserLoginControlActivity.this);
+                    if (loginTransition == Constants.LOGIN_AFTER_DELIVERY) {
+                        startActivity(new Intent(UserLoginControlActivity.this, DeliveryManagementActivity.class));
+                    } else if (loginTransition == Constants.LOGIN_AFTER_LOCATION) {
+                        startActivity(new Intent(UserLoginControlActivity.this, LocationSelectionActivity.class));
+                    }
                     finish();
                     overridePendingTransitionExit();
                 } else {

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "358522391346",
+    "firebase_url": "https://hotel-app-54631.firebaseio.com",
+    "project_id": "hotel-app-54631",
+    "storage_bucket": "hotel-app-54631.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358522391346:android:1f17b6f09be58451",
+        "android_client_info": {
+          "package_name": "abish.veettusorudemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358522391346-drmv06klga1ef31pierhqvo8g32jalbe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1w3erVJFSg_FvxHq_WfJu_kVCzGLYmdA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

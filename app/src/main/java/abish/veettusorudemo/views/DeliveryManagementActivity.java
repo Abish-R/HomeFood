@@ -1,39 +1,55 @@
 package abish.veettusorudemo.views;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.constants.UrlConstants;
+import abish.veettusorudemo.network.GsonRequest;
+import abish.veettusorudemo.network.VolleyApiClient;
+import abish.veettusorudemo.network.model.AddressData;
+import abish.veettusorudemo.network.model.OrderData;
+import abish.veettusorudemo.network.request.OrderRequest;
+import abish.veettusorudemo.network.response.AddressDeleteResponse;
+import abish.veettusorudemo.network.response.AddressResponse;
+import abish.veettusorudemo.network.response.OrderResponse;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static abish.veettusorudemo.R.id.tv_date_time;
+import static abish.veettusorudemo.Utils.displayLoader;
+import static abish.veettusorudemo.Utils.hideLoader;
 
 public class DeliveryManagementActivity extends AppCompatActivity implements
         com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener, com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
@@ -41,21 +57,40 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     @Bind(R.id.bt_continue)
     Button btContinue;
 
-    @Bind(R.id.date_time)
+    @Bind(R.id.bt_add_address)
+    Button addAddress;
+
+    @Bind(tv_date_time)
     TextView dateTime;
 
     @Bind(R.id.toolbar)
     Toolbar toolBar;
 
+    @Bind(R.id.door_street)
+    EditText doorStreet;
+
+    @Bind(R.id.city)
+    EditText city;
+
+    @Bind(R.id.pincode)
+    EditText pinCode;
+
     @Bind(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.delivery_recycler_view)
-    RecyclerView deliveryRecyclerView;
+    @Bind(R.id.rv_address_list)
+    RecyclerView rvAddressList;
 
-    SimpleDateFormat df;
-    Calendar c = Calendar.getInstance();
-    StringBuilder dateTimeText;
+    @Bind(R.id.ll_address_entry)
+    LinearLayout llAddressEntry;
+
+    private Calendar calendar = Calendar.getInstance();
+    private StringBuilder dateTimeText;
+    private List<AddressData> addressList;
+    private AddressListAdapter mAdapter;
+    private boolean isPermanentEdit;
+    private ArrayList<OrderData> orderDatas = new ArrayList<>();
+    private OrderRequest requestData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,65 +100,31 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setTitle();
 
-        ArrayList<FoodDetail> selectedFoodDetailList = getIntent().getExtras().
-                getParcelableArrayList(Constants.SELECTED_MAIN_FOODS);
+        orderDatas = getIntent().getExtras().
+                getParcelableArrayList(Constants.ALL_ORDERS);
 
-        if (selectedFoodDetailList != null) {
-            FoodDeliveryListAdapter mAdapter = new FoodDeliveryListAdapter(this, selectedFoodDetailList);
-            deliveryRecyclerView.setAdapter(mAdapter);
+        requestData = new OrderRequest();
+        if (orderDatas != null && !orderDatas.isEmpty()) {
+            requestData.setOrderDetail(orderDatas);
         }
 
-        btContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(DeliveryManagementActivity.this)
-                        .setMessage("Your order is confirmed. You will get the order on time. Stay with us and comment your experience with us.")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+        getUserAddress("");
 
-                                NotificationCompat.Builder b = new NotificationCompat.Builder(DeliveryManagementActivity.this);
-
-                                b.setAutoCancel(true)
-                                        .setDefaults(Notification.DEFAULT_ALL)
-                                        .setWhen(System.currentTimeMillis())
-                                        .setSmallIcon(R.drawable.heart_filled)
-                                        .setTicker("Food Order placed")
-                                        .setContentTitle("Food Order placed")
-                                        .setContentText("Your placed order will be delivered to your address on time. Have a great day.")
-                                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                                        .setContentInfo("Order Ok");
-
-
-                                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                notificationManager.notify(1, b.build());
-                                finish();
-                            }
-                        }).show();
-            }
-        });
-        dateTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dpd = DatePickerDialog.newInstance(DeliveryManagementActivity.this,
-                        c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-                dpd.show(getFragmentManager(), "Datepickerdialog");
-                dpd.setMinDate(setMinMaxDate(true));
-                dpd.setMaxDate(setMinMaxDate(false));
-                //dpd.setVersion(DatePickerDialog.Version.VERSION_2);
-            }
-        });
     }
 
-    private Calendar setMinMaxDate(boolean b) {
-        Calendar cal  = Calendar.getInstance();
-        if(b){
-            cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH),
-                    cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
-        } else {
-            cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DAY_OF_MONTH)+2,
-                    cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE));
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransitionExit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
-        return cal;
+        return false;
     }
 
     private void setTitle() {
@@ -134,112 +135,387 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    /**
-     * Default Date Display in Fields
-     */
-    @SuppressLint("SimpleDateFormat")
-    public void defaultDateCal() {
-        int day, month, year, hour, minute;
-        Calendar c = Calendar.getInstance();
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        df = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-        SimpleDateFormat timeformat = new SimpleDateFormat("HH:MM", Locale.ENGLISH);
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
-        hour = c.get(Calendar.HOUR_OF_DAY);
-        minute = c.get(Calendar.MINUTE);
-        Log.i("Initial Time", "" + c.getTime());
-        //dateTime.setText(df.format(c.getTime()));
-
-        getDateDiffString();
+    public void displayCalendarView(View view) {
+        DatePickerDialog datePicker = DatePickerDialog.newInstance(DeliveryManagementActivity.this,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.show(getFragmentManager(), "Datepickerdialog");
+        datePicker.setMinDate(setMinMaxDate(true));
+        datePicker.setMaxDate(setMinMaxDate(false));
     }
 
-    /**
-     * Find Date difference
-     */
-    public Double getDateDiffString() {
-        Date oldDate, newDate, oldDate1, newDate1;
-
-        long diff = 0, findfromdatefault = 0;
-        Date now, nowdte;
-        double difference = 0.0;
-        try {
-            oldDate = df.parse(dateTime.getText().toString());
-            newDate = df.parse(dateTime.getText().toString());
-            oldDate1 = df.parse(df.format(oldDate));
-            newDate1 = df.parse(df.format(newDate));
-            nowdte = df.parse(df.format(c.getTime()));
-            now = df.parse(df.format(nowdte));
-            findfromdatefault = oldDate1.getTime() - now.getTime();
-            if (findfromdatefault < 0)
-                Toast.makeText(this, "Wrong From date", Toast.LENGTH_SHORT).show();
-            else {
-                diff = newDate1.getTime() - oldDate1.getTime();
-                difference = (double) diff;
-                if (difference < 0)
-                    Toast.makeText(this, "Wrong To date", Toast.LENGTH_SHORT).show();
-                else {
-                    difference = difference / 86400000;
-                    if (difference <= 1 && difference >= 0) {
-                        return difference = 1;
-                    } else if (difference > 1) {
-                        if (difference > 15)
-                            Toast.makeText(this, "Wrong To date", Toast.LENGTH_SHORT).show();
-                        else
-                            return difference;
-                    } else {
-                        Toast.makeText(this, "Wrong To date", Toast.LENGTH_SHORT).show();
-                        return 0.0;
-                    }
-                }
+    public void addAddress(View view) {
+        if (addAddress.getText().toString().equals(getString(R.string.text_add_address)) && addressList.size() < 4) {
+            enableAddressEntryMode();
+            addAddress.setText(R.string.text_add_or_update_address);
+        } else if (addAddress.getText().toString().equals(getString(R.string.text_add_or_update_address))) {
+            try {
+                validateAddress();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } else {
+            Toast.makeText(this, "Added Max addresses. Delete one to add new Address.", Toast.LENGTH_SHORT).show();
         }
-        return difference;
+    }
+
+    private Calendar setMinMaxDate(boolean isMinDate) {
+        if (isMinDate) {
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        } else {
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH) + 2,
+                    calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        }
+        return calendar;
     }
 
     @Override
     public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         dateTimeText = new StringBuilder();
-        String month = "";
-        if (monthOfYear < 9)
-            month = "0" + (monthOfYear + 1);
-        else
-            month = "" + monthOfYear + 1;
-        dateTimeText.append(dayOfMonth).append(" - ").append(month).append(" - ").append(year);
+        int months = monthOfYear + 1;
+        String month = monthOfYear < 9 ? ("0" + months) : ("" + months);
+
+        dateTimeText.append(year).append("-").append(month).append("-").append(dayOfMonth);
         TimePickerDialog dpd = TimePickerDialog.newInstance(DeliveryManagementActivity.this,
-                c.get(Calendar.HOUR), c.get(Calendar.MINUTE), false);
+                calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), false);
         dpd.show(getFragmentManager(), "TimePickerDialog");
     }
 
     @Override
     public void onTimeSet(com.wdullaer.materialdatetimepicker.time.TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String hour = "", min = "";
-        if (hourOfDay < 10)
-            hour = "0" + hourOfDay;
-        else
-            hour = "" + hourOfDay;
-        if (minute < 10)
-            min = "0" + minute + 1;
-        else
-            min = "" + minute;
-        dateTimeText.append(", ").append(hour).append(" : ").append(min);
+        String hour = hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay;
+        int minutes = minute + 1;
+        String min = minute < 9 ? ("0" + minutes) : "" + minutes;
+
+        dateTimeText.append(" ").append(hour).append(":").append(min).append(":00");
         dateTime.setText(dateTimeText);
     }
 
-    @Override
-    public void onBackPressed() {
+    private void goToMakeOrders() {
+        Utils.alertOkMessage(DeliveryManagementActivity.this,
+                "Your order is confirmed. You will get the order on time. Stay with us and comment your experience with us."
+                , "OK");
+        String url = UrlConstants.SEND_ORDERS_URL + UrlConstants.ORDERS_DATA
+                + requestData.getOrderRequest(requestData);
+        displayLoader(this, "Sending your Order...");
+
+        GsonRequest request = new GsonRequest<OrderResponse>(url, null,
+                OrderResponse.class, null, new Response.Listener<OrderResponse>() {
+            @Override
+            public void onResponse(OrderResponse response) {
+                if (response.isSuccess()) {
+                    sendNotification();
+                } else {
+                    Toast.makeText(DeliveryManagementActivity.this, "Error in Server", Toast.LENGTH_SHORT).show();
+                }
+                hideLoader();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                hideLoader();
+            }
+        });
+        VolleyApiClient.getInstance().addToRequestQueue(request, "Order Food");
+        sendNotification();
+    }
+
+    private void sendNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(DeliveryManagementActivity.this);
+        builder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.heart_filled)
+                .setTicker("Food Order placed")
+                .setContentTitle("Food Order placed")
+                .setContentText("Your placed order will be delivered to your address on time. Have a great day.")
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                .setContentInfo("Order Ok");
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, builder.build());
         finish();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+    private void getUserAddress(String userId) {
+        String url = UrlConstants.GET_ADDRESS_URL
+                + UrlConstants.ADDRESS_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID);
+        displayLoader(this, "Receiving Address...");
+
+        GsonRequest request = new GsonRequest<AddressResponse>(url, null,
+                AddressResponse.class, null, new Response.Listener<AddressResponse>() {
+            @Override
+            public void onResponse(AddressResponse response) {
+                if (response.isSuccess()) {
+                    addressList = response.getAddressList();
+                    setOrWriteAddress();
+                    addAddress.setText(R.string.text_add_address);
+                }
+                hideLoader();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                hideLoader();
+            }
+        });
+        VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    private void setOrWriteAddress() {
+        if (addressList != null && !addressList.isEmpty()) {
+            mAdapter = new AddressListAdapter(DeliveryManagementActivity.this, addressList);
+            rvAddressList.setLayoutManager(new LinearLayoutManager(DeliveryManagementActivity.this));
+            rvAddressList.setAdapter(mAdapter);
+
+            enableAddressListMode();
+        } else {
+            enableAddressEntryMode();
         }
-        return false;
+    }
+
+    private void enableAddressEntryMode() {
+        rvAddressList.setVisibility(View.GONE);
+        llAddressEntry.setVisibility(View.VISIBLE);
+        //addAddress.setVisibility(View.GONE);
+        dateTime.setVisibility(View.GONE);
+        btContinue.setVisibility(View.GONE);
+        addAddress.setText(R.string.text_add_or_update_address);
+    }
+
+    private void enableAddressListMode() {
+        rvAddressList.setVisibility(View.VISIBLE);
+        llAddressEntry.setVisibility(View.GONE);
+        //addAddress.setVisibility(View.VISIBLE);
+        dateTime.setVisibility(View.VISIBLE);
+        btContinue.setVisibility(View.VISIBLE);
+        addAddress.setText(R.string.text_add_address);
+    }
+
+    public void orderFood(View view) {
+        if (!dateTime.getText().toString().equals(getString(R.string.text_pick_delivery_time))) {
+            requestData.setDeliveryTime(dateTime.getText().toString());
+
+            if (rvAddressList.getVisibility() == View.VISIBLE && addressList != null && !addressList.isEmpty()) {
+                boolean isCheckedAddress = false;
+                for (AddressData address : addressList) {
+                    if (address.isChecked()) {
+                        requestData.setUserLocation(address.getAddressId());
+                        isCheckedAddress = true;
+                    }
+                }
+
+                if (isCheckedAddress) {
+                    requestData.setUserID(Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID));
+                    goToMakeOrders();
+                } else {
+                    Toast.makeText(this, "Select a delivery Address", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                try {
+                    validateAddress();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Toast.makeText(this, "Select the delivery time", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void validateAddress() throws Exception {
+        if (doorStreet.getText().toString().length() < 5) {
+            doorStreet.setError("Enter correct Door & Street");
+            throw new Exception("Enter a correct door number, street name");
+        }
+        if (city.getText().toString().length() < 3) {
+            city.setError("Enter correct City");
+            throw new Exception("Enter a correct city name");
+        }
+        if (pinCode.getText().toString().length() < 6) {
+            pinCode.setError("Enter correct area code");
+            throw new Exception("Enter a correct area code");
+        }
+        addOrUpdateAddress();
+    }
+
+    private void addOrUpdateAddress() {
+        String url = UrlConstants.GET_ADDRESS_UPDATE_URL
+                + UrlConstants.ADDRESS_UPDATE_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.ADDRESS_UPDATE_STREET + doorStreet.getText().toString()
+                + UrlConstants.ADDRESS_UPDATE_CITY + city.getText().toString()
+                + UrlConstants.ADDRESS_UPDATE_STATE + Constants.CURRENT_STATE
+                + UrlConstants.ADDRESS_UPDATE_COUNTRY + Constants.CURRENT_COUNTRY
+                + UrlConstants.ADDRESS_UPDATE_PIN_CODE + pinCode.getText().toString()
+                + UrlConstants.ADDRESS_UPDATE_FLAG + (isPermanentEdit ? Constants.ADDRESS_PERMANENT_FLAG : Constants.ADDRESS_TEMPORARY_FLAG);
+        displayLoader(this, "Updating Address...");
+
+        GsonRequest request = new GsonRequest<AddressResponse>(url, null,
+                AddressResponse.class, null, new Response.Listener<AddressResponse>() {
+            @Override
+            public void onResponse(AddressResponse response) {
+                if (response.isSuccess()) {
+                    getUserAddress("");
+                } else if (response.getResponse().equals("2")) {
+                    Utils.alertOkMessage(DeliveryManagementActivity.this, "Maximum Address Reached, select one of them and change", "Ok");
+                    getUserAddress("");
+                }
+                hideLoader();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                hideLoader();
+            }
+        });
+        VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+
+    /**
+     * Overrides the pending Activity transition by performing the "Enter" animation.
+     */
+    protected void overridePendingTransitionEnter() {
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+    }
+
+    /**
+     * Overrides the pending Activity transition by performing the "Exit" animation.
+     */
+    protected void overridePendingTransitionExit() {
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
+    // From Adapter edit Address
+    public void editAddress(AddressData addressDetail) {
+        isPermanentEdit = addressDetail.getAddressType().equals(Constants.ADDRESS_PERMANENT_FLAG);
+        rvAddressList.setVisibility(View.GONE);
+        llAddressEntry.setVisibility(View.VISIBLE);
+        doorStreet.setText(addressDetail.getStreet());
+        city.setText(addressDetail.getCity());
+        pinCode.setText(addressDetail.getPincode());
+    }
+
+    // From Adapter edit Address
+    public void deleteAddress(final AddressData addressDetail) {
+        String url = UrlConstants.GET_ADDRESS_DELETE_URL
+                + UrlConstants.ADDRESS_DELETE_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.ADDRESS_DELETE_TEMP_ID + addressDetail.getAddressId();
+        displayLoader(this, "Updating Address...");
+
+        GsonRequest request = new GsonRequest<AddressDeleteResponse>(url, null,
+                AddressDeleteResponse.class, null, new Response.Listener<AddressDeleteResponse>() {
+            @Override
+            public void onResponse(AddressDeleteResponse response) {
+                if (response.isSuccess()) {
+                    addressList.remove(addressDetail);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Utils.alertOkMessage(DeliveryManagementActivity.this, response.getStatus(), "Ok");
+                }
+                hideLoader();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                hideLoader();
+            }
+        });
+        VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    public class AddressListAdapter extends RecyclerView.Adapter {
+        private Context context;
+        private LayoutInflater inflater;
+        private List<AddressData> addressList;
+
+        private AddressListAdapter(Context context, List<AddressData> deliveryFoodList) {
+            this.context = context;
+            inflater = LayoutInflater.from(context);
+            this.addressList = deliveryFoodList;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new MyViewHolder(inflater.inflate(R.layout.item_address, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof MyViewHolder) {
+                ((MyViewHolder) holder).bind(addressList.get(position), position);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return addressList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            @Bind(R.id.ib_edit_address)
+            ImageButton ibEditAddress;
+
+            @Bind(R.id.ib_delete_address)
+            ImageButton ibDeleteAddress;
+
+            @Bind(R.id.tv_address)
+            TextView tvAddress;
+
+            @Bind(R.id.cb_address)
+            CheckBox cbAddress;
+
+            private MyViewHolder(View itemView) {
+                super(itemView);
+
+                ButterKnife.bind(this, itemView);
+            }
+
+            public void bind(final AddressData addressDetail, final int position) {
+                tvAddress.setText(addressList.get(position).getAddress());
+                cbAddress.setChecked(addressList.get(position).isChecked());
+
+                cbAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        setChecking(isChecked);
+                        addressDetail.setChecked(isChecked);
+                    }
+                });
+
+                ibEditAddress.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        editAddress(addressDetail);
+                    }
+                });
+
+                ibDeleteAddress.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteAddress(addressDetail);
+                    }
+                });
+            }
+
+            private void setChecking(boolean isChecked) {
+                if (isChecked) {
+                    for (int i = 0; i < addressList.size(); i++) {
+                        addressList.get(i).setChecked(false);
+                    }
+                }
+                cbAddress.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
     }
 }

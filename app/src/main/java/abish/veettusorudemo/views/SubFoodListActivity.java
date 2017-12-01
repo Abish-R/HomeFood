@@ -76,7 +76,11 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
 
             String mainCourseId = "";
             for (FoodDetail foodDetail : selectedFoodDetailList) {
-                mainCourseId += foodDetail.getId();
+                if (mainCourseId.isEmpty()) {
+                    mainCourseId += foodDetail.getId();
+                } else {
+                    mainCourseId += "," + foodDetail.getId();
+                }
             }
             getSubDishList(mainCourseId);
         }
@@ -107,22 +111,24 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 //                                Intent intent = new Intent(SubFoodListActivity.this, UserLoginControlActivity.class);
-                                goToDeliveryScreen();
+                                goToALLORderCheckScreen();
                             }
                         }).show();
             }
         });
     }
 
-    private void goToDeliveryScreen() {
-        for(FoodDetail subFoodList : subCourseList) {
-            if(subFoodList.isChecked()) {
+    private void goToALLORderCheckScreen() {
+        for (FoodDetail subFoodList : subCourseList) {
+            if (subFoodList.isChecked()) {
+                subFoodList.setFoodCategoryId(Constants.SUB_COURSE_TYPE);
                 selectedFoodDetailList.add(subFoodList);
             }
         }
-        Intent intent = new Intent(SubFoodListActivity.this, DeliveryManagementActivity.class);
+        Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
         intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
-        onLaunchActivity(intent, true);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -176,7 +182,8 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     }
 
     @Override
-    public void onLaunchActivity(Intent intent, boolean needFinishActivity) {
+    public void onLaunchActivity(FoodDetail foodDetail, Intent intent, boolean needFinishActivity) {
+        intent.putExtra(Constants.SELECTED_FOOD, foodDetail);
         if (needFinishActivity) {
             startActivity(intent);
             finish();

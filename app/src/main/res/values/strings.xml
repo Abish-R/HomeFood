@@ -19,6 +19,7 @@
     <string name="title_login">Login</string>
     <string name="title_sub_food_category">Sub Course Food</string>
     <string name="title_delivery">Delivery</string>
+    <string name="title_total_order">Total Orders</string>
 
     <string name="text_name">Name</string>
     <string name="text_username">Username</string>
@@ -49,4 +50,17 @@
     <string name="order_more">Order More</string>
     <string name="text_place_order">Place Order</string>
     <string name="text_skip">Skip</string>
+    <string name="text_order">Order %1$s</string>
+    <string name="text_chennai_tamilnadu_india">Chennai, Tamilnadu, India</string>
+    <string name="text_zipcode">Zipcode</string>
+    <string name="text_city">City</string>
+    <string name="text_door_no_street_name">Door no / Street name</string>
+    <string name="text_confirm_address">Confirm Address:</string>
+    <string name="text_pick_delivery_time">Pick Delivery Time</string>
+    <string name="price_display">Rs. %1$s</string>
+    <string name="empty_string">%1$d</string>
+    <string name="text_add_address">Add New Address</string>
+    <string name="text_add_or_update_address">Add / Update</string>
+    <string name="text_zero">0</string>
+    <string name="text_add">ADD</string>
 </resources>

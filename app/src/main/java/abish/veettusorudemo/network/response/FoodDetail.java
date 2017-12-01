@@ -16,6 +16,9 @@ public class FoodDetail implements Parcelable {
     @SerializedName("id")
     private int id;
 
+    @SerializedName("food_category_id")
+    private String foodCategoryId;
+
     @SerializedName("food_category")
     private String foodCategory;
 
@@ -57,9 +60,14 @@ public class FoodDetail implements Parcelable {
 
     private transient int selectedFoodCount = 0;
     private transient boolean isChecked;
+    private transient int priceAfterOffer;
+
+    public FoodDetail(){
+    }
 
     protected FoodDetail(Parcel in) {
         id = in.readInt();
+        foodCategoryId = in.readString();
         foodCategory = in.readString();
         foodName = in.readString();
         foodShortName = in.readString();
@@ -72,6 +80,28 @@ public class FoodDetail implements Parcelable {
         availableOnlyToday = in.readString();
         addedDate = in.readString();
         favouriteCourse = in.readString();
+        selectedFoodCount = in.readInt();
+        priceAfterOffer = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(foodCategoryId);
+        parcel.writeString(foodCategory);
+        parcel.writeString(foodName);
+        parcel.writeString(foodShortName);
+        parcel.writeString(shortDescription);
+        parcel.writeString(fullDescription);
+        parcel.writeString(price);
+        parcel.writeString(foodImageUrl);
+        parcel.writeString(todaySpecial);
+        parcel.writeString(availableToday);
+        parcel.writeString(availableOnlyToday);
+        parcel.writeString(addedDate);
+        parcel.writeString(favouriteCourse);
+        parcel.writeInt(selectedFoodCount);
+        parcel.writeInt(priceAfterOffer);
     }
 
     public static final Creator<FoodDetail> CREATOR = new Creator<FoodDetail>() {
@@ -100,6 +130,14 @@ public class FoodDetail implements Parcelable {
 
     public void setFoodCategory(String foodCategory) {
         this.foodCategory = foodCategory;
+    }
+
+    public String getFoodCategoryId() {
+        return foodCategoryId;
+    }
+
+    public void setFoodCategoryId(String foodCategoryId) {
+        this.foodCategoryId = foodCategoryId;
     }
 
     public String getFoodName() {
@@ -191,8 +229,12 @@ public class FoodDetail implements Parcelable {
         this.favouriteCourse = isFavourite ? "1" : "0";
     }
 
-    public int getSelectedFoodCount() {
+    public int getSelectedFoodCountNumber() {
         return selectedFoodCount;
+    }
+
+    public String getSelectedFoodCount() {
+        return selectedFoodCount + "";
     }
 
     public void setSelectedFoodCount(int selectedFoodCount) {
@@ -220,20 +262,11 @@ public class FoodDetail implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(foodCategory);
-        parcel.writeString(foodName);
-        parcel.writeString(foodShortName);
-        parcel.writeString(shortDescription);
-        parcel.writeString(fullDescription);
-        parcel.writeString(price);
-        parcel.writeString(addedDate);
-        parcel.writeString(favouriteCourse);
-        parcel.writeString(foodImageUrl);
-        parcel.writeString(todaySpecial);
-        parcel.writeString(availableToday);
-        parcel.writeString(availableOnlyToday);
+    public void setPriceAfterOffer(String finalFoodPrice) {
+        this.priceAfterOffer = Integer.valueOf(finalFoodPrice);
+    }
+
+    public int getPriceAfterOffer() {
+        return priceAfterOffer;
     }
 }

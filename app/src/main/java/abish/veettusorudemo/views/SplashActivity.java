@@ -1,13 +1,14 @@
 package abish.veettusorudemo.views;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.constants.Constants;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -27,11 +28,12 @@ public class SplashActivity extends AppCompatActivity {
 
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
-        new Handler().postDelayed(new Runnable(){
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashActivity.this,UserLoginControlActivity.class);
+                Intent mainIntent = new Intent(SplashActivity.this, UserLoginControlActivity.class);
+                mainIntent.putExtra(Constants.LOGIN_TRANSITION_DECIDER, Constants.LOGIN_AFTER_LOCATION);
                 startActivity(mainIntent);
                 finish();
                 overridePendingTransitionExit();

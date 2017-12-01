@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -48,6 +49,7 @@ public class VolleyApiClient extends Application {
         // set the default tag if tag is empty
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
+        Log.i("Url Request", req.toString());
     }
 
     public <T> void addToRequestQueue(Request<T> req) {

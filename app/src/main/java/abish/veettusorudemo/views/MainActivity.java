@@ -91,14 +91,15 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 ArrayList<FoodDetail> selectedFoodDetailList = new ArrayList<>();
                 for (FoodDetail foodDetail : foodDetailList) {
-                    if (foodDetail.getSelectedFoodCount() >= 1) {
+                    if (foodDetail.getSelectedFoodCountNumber() >= 1) {
+                        foodDetail.setFoodCategoryId(Constants.MAIN_COURSE_TYPE);
                         selectedFoodDetailList.add(foodDetail);
                     }
                 }
                 if (!selectedFoodDetailList.isEmpty()) {
                     Intent intent = new Intent(MainActivity.this, SubFoodListActivity.class);
                     intent.putParcelableArrayListExtra(Constants.SELECTED_MAIN_FOODS, selectedFoodDetailList);
-                    onLaunchActivity(intent, false);
+                    startActivity(intent);
                 } else {
                     alertFoodAtLeastOne();
                 }
@@ -234,7 +235,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLaunchActivity(Intent intent, boolean needFinishActivity) {
+    public void onLaunchActivity(FoodDetail foodDetail, Intent intent, boolean needFinishActivity) {
+        intent.putExtra(Constants.SELECTED_FOOD, foodDetail);
         if (needFinishActivity) {
             startActivity(intent);
             finish();

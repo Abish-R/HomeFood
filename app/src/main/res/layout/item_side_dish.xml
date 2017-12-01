@@ -49,8 +49,26 @@
             android:tint="#50000000"
             android:tintMode="src_over" />
 
+        <RelativeLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@+id/top_panel">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="45dp"
+                android:layout_marginEnd="45dp"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="45dp" />
+
+        </RelativeLayout>
+
         <ImageView
-            android:padding="3dp"
             android:id="@+id/iv_favourite"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -58,6 +76,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="25dp"
+            android:padding="3dp"
             android:src="@drawable/heart_outline" />
 
         <TextView

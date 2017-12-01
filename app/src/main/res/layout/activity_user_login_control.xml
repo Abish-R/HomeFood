@@ -30,7 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/text_email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:text="abish" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -77,7 +78,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/text_password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="abish" />
     </android.support.design.widget.TextInputLayout>
 
     <Button

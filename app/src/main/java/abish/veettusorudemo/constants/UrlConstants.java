@@ -6,7 +6,7 @@ package abish.veettusorudemo.constants;
 
 public class UrlConstants {
 
-    private static String BASE_URL = "http://httest.in/hotelws/";
+    private static String BASE_URL = "http://webservice.budeis.com/hotel_api/";
     public static String GET_LOCATION_URL = BASE_URL + "getlocations.php";
     public static String GET_CATEGORY_URL = BASE_URL + "getcategoryandtimings.php";
     public static String GET_MAIN_FOOD_URL = BASE_URL + "getmaincourseandoffers.php";
@@ -14,6 +14,10 @@ public class UrlConstants {
     public static String GET_SIGN_UP_URL = BASE_URL + "usersignup.php";
     public static String GET_LOGIN_URL = BASE_URL + "userlogin.php";
     public static String GET_FAV_FOOD_URL = BASE_URL + "addtofavourite.php";
+    public static String GET_ADDRESS_URL = BASE_URL + "getuseraddresses.php";
+    public static String GET_ADDRESS_UPDATE_URL = BASE_URL + "addorupdateaddress.php";
+    public static String GET_ADDRESS_DELETE_URL = BASE_URL + "deletetemproryaddress.php";
+    public static String SEND_ORDERS_URL = BASE_URL + "addOrder.php";
 
     //Url Params
     public static String MAIN_FOOD_PARAM_FOOD_CATEGORY = "?food_category=";
@@ -40,7 +44,23 @@ public class UrlConstants {
     public static String LOGIN_PARAM_DEVICE_TOKEN = "&deviceToken=";
 
     //TODO - Change the hardcoded values
-    public static String FAV_FOOD_PARAM_USER_ID = "?user_id=2";
-    public static String FAV_FOOD_PARAM_COURSE_ID = "&course_id=1";
-    public static String FAV_FOOD_PARAM_COURSE_TYPE = "&course_type=1";
+    public static String FAV_FOOD_PARAM_USER_ID = "?user_id=";
+    public static String FAV_FOOD_PARAM_COURSE_ID = "&course_id=";
+    public static String FAV_FOOD_PARAM_COURSE_TYPE = "&course_type=";
+
+    //TODO - Change the hardcoded values
+    public static String ADDRESS_USER_ID = "?user_id=";
+
+    public static String ADDRESS_UPDATE_USER_ID = "?user_id=";
+    public static String ADDRESS_UPDATE_STREET = "&street=";
+    public static String ADDRESS_UPDATE_CITY = "&city=";
+    public static String ADDRESS_UPDATE_STATE = "&state=";
+    public static String ADDRESS_UPDATE_COUNTRY = "&country=";
+    public static String ADDRESS_UPDATE_PIN_CODE = "&pincode=";
+    public static String ADDRESS_UPDATE_FLAG = "&address_flag=";
+
+    public static String ADDRESS_DELETE_USER_ID = "?user_id=";
+    public static String ADDRESS_DELETE_TEMP_ID = "&temp_add_id=";
+
+    public static String ORDERS_DATA = "?orderData=";
 }

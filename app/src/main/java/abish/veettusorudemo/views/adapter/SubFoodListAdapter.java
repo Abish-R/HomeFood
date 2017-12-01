@@ -3,6 +3,7 @@ package abish.veettusorudemo.views.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
@@ -31,11 +36,16 @@ import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
+import abish.veettusorudemo.views.UserLoginControlActivity;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
+import static abish.veettusorudemo.R.id.progress_bar;
 import static abish.veettusorudemo.Utils.hideLoader;
 
 /**
  * Created by Abish on 19/02/2017.
+ * </p>
  */
 public class SubFoodListAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -66,39 +76,72 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
         return subCourseList.size();
     }
 
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-    private class MyViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.share_food)
+        ImageView shareFood;
 
-        ImageView shareFood, ivFood, ivMinus, ivPlus, ivFavourite;
-        TextView tvFoodName, tvPrice, tvCount, tvDescription;
+        @Bind(R.id.iv_food)
+        ImageView ivFood;
+
+        @Bind(R.id.iv_minus)
+        ImageView ivMinus;
+
+        @Bind(R.id.iv_plus)
+        ImageView ivPlus;
+
+        @Bind(R.id.iv_favourite)
+        ImageView ivFavourite;
+
+        @Bind(R.id.tv_food_name)
+        TextView tvFoodName;
+
+        @Bind(R.id.tv_price)
+        TextView tvPrice;
+
+        @Bind(R.id.tv_count)
+        TextView tvCount;
+
+        @Bind(R.id.tv_description)
+        TextView tvDescription;
+
+        @Bind(R.id.cb_sub_food)
         CheckBox cbSubFood;
 
-        public MyViewHolder(View itemView) {
+        @Bind(progress_bar)
+        ProgressBar progressBar;
+
+        private MyViewHolder(View itemView) {
             super(itemView);
-            shareFood = (ImageView) itemView.findViewById(R.id.share_food);
-            ivFood = (ImageView) itemView.findViewById(R.id.iv_food);
-            ivMinus = (ImageView) itemView.findViewById(R.id.iv_minus);
-            ivPlus = (ImageView) itemView.findViewById(R.id.iv_plus);
-            ivFavourite = (ImageView) itemView.findViewById(R.id.iv_favourite);
 
-            tvFoodName = (TextView) itemView.findViewById(R.id.tv_food_name);
-            tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
-            tvCount = (TextView) itemView.findViewById(R.id.tv_count);
-            tvDescription = (TextView) itemView.findViewById(R.id.tv_description);
-
-            cbSubFood = (CheckBox) itemView.findViewById(R.id.cb_sub_food);
+            ButterKnife.bind(this, itemView);
         }
 
         public void bind(final FoodDetail foodDetail, final int position) {
             tvFoodName.setText(foodDetail.getFoodName());
             tvPrice.setText(foodDetail.getPrice());
             tvDescription.setText(foodDetail.getShortDescription());
-            tvCount.setText(foodDetail.getSelectedFoodCount() + "");
+            tvCount.setText(foodDetail.getSelectedFoodCount());
             cbSubFood.setChecked(foodDetail.isChecked());
+            foodDetail.setPriceAfterOffer(foodDetail.getPrice());
 
             if (!foodDetail.getFoodImageUrl().isEmpty()) {
                 Glide.with(context)
                         .load(foodDetail.getFoodImageUrl())
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                progressBar.setVisibility(View.GONE);
+                                ivFood.setImageResource(R.drawable.heart_outline);
+                                return false;
+                            }
+                        })
                         .error(R.drawable.heart_filled)
                         .placeholder(R.drawable.heart_outline)
                         .into(ivFood);
@@ -107,11 +150,10 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             cbSubFood.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    foodDetail.setChecked(isChecked);
-                    if (isChecked)
+                    if (isChecked && !foodDetail.isChecked())
                         setFoodCount(1, position);
-                    else
-                        setFoodCount(-1, position);
+                    else if (!isChecked && foodDetail.isChecked())
+                        setFoodCount(0, position);
                 }
             });
 
@@ -130,11 +172,9 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             ivFood.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null) {
+                    if (mListener != null) {
                         Intent intent = new Intent(context, FoodDescriptionActivity.class);
-                        intent.putExtra(Constants.SELECTED_FOOD, foodDetail);
-                        //context.startActivity(intent);
-                        mListener.onLaunchActivity(intent, false);
+                        mListener.onLaunchActivity(foodDetail, intent, false);
                     }
                 }
             });
@@ -156,46 +196,75 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             ivFavourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateFavourite(subCourseList.get(position));
-//                    if (!foodDetail.isFavourite()) {
-//                        foodDetail.setFavourite(true);
-//                        ivFavourite.setImageResource(R.drawable.heart_filled);
-//                    } else {
-//                        foodDetail.setFavourite(false);
-//                        ivFavourite.setImageResource(R.drawable.heart_outline);
-//                    }
+                    final String userId = Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID);
+                    if (userId != null) {
+                        updateFavourite(subCourseList.get(position));
+                    } else {
+                        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                        alertDialog.setMessage("Login to set favourite foods.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        context.startActivity(new Intent(context, UserLoginControlActivity.class));
+                                    }
+                                });
+                        alertDialog.show();
+                    }
                 }
             });
         }
 
         private void setFoodCount(int count, int position) {
-            int newCount = subCourseList.get(position).getSelectedFoodCount() + count;
+            int newCount = subCourseList.get(position).getSelectedFoodCountNumber() + count;
 
-            if (newCount <= 0) {
-                Snackbar.make(ivPlus, "Order atleast one to proceed", Snackbar.LENGTH_LONG)
+            if (count == 0 || newCount == 0) {
+                updateFoodSelectionAndCount(position, 0, false);
+            } else if (newCount < 0) {
+                Snackbar.make(ivPlus, "You already deselected the food", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else if (newCount > 10) {
                 Snackbar.make(ivPlus, "You can order max 10, Contact directly, see 'About Us' page.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else {
-                subCourseList.get(position).setSelectedFoodCount(newCount);
-                tvCount.setText(newCount + "");
+                updateFoodSelectionAndCount(position, newCount, true);
             }
+        }
+
+        private void updateFoodSelectionAndCount(int position, int newCount, boolean isChecked) {
+            subCourseList.get(position).setSelectedFoodCount(newCount);
+            tvCount.setText(context.getString(R.string.empty_string, newCount));
+            subCourseList.get(position).setChecked(isChecked);
+            notifier();
         }
 
         private void updateFavourite(final FoodDetail foodDetailData) {
             //TODO : Change hard coded values in UrlConstants
-            String url = UrlConstants.GET_FAV_FOOD_URL + UrlConstants.FAV_FOOD_PARAM_USER_ID + ""
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + ""
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + "";
+            String url = UrlConstants.GET_FAV_FOOD_URL
+                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID)
+                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
+                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.SUB_COURSE_TYPE;
             Utils.displayLoader(context, "Updating Favourite...");
 
-            GsonRequest request = new GsonRequest<FoodFavouriteResponse>(url, null,
+            GsonRequest request = new GsonRequest<>(url, null,
                     FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
                 @Override
                 public void onResponse(FoodFavouriteResponse response) {
                     if (response.isSuccess()) {
                         foodDetailData.setFavourite(!foodDetailData.isFavourite());
+//                        if (!foodDetailData.isFavourite()) {
+//                            foodDetailData.setFavourite(true);
+//                            ivFavourite.setImageResource(R.drawable.heart_filled);
+//                        } else {
+//                            foodDetailData.setFavourite(false);
+//                            ivFavourite.setImageResource(R.drawable.heart_outline);
+//                        }
                         notifier();
                     }
                     hideLoader();
@@ -212,6 +281,11 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
     }
 
     private void notifier() {
-        notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 }
