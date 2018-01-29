@@ -19,10 +19,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -126,25 +123,25 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             foodDetail.setPriceAfterOffer(foodDetail.getPrice());
 
             if (!foodDetail.getFoodImageUrl().isEmpty()) {
-                Glide.with(context)
-                        .load(foodDetail.getFoodImageUrl())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                ivFood.setImageResource(R.drawable.heart_outline);
-                                return false;
-                            }
-                        })
-                        .error(R.drawable.heart_filled)
-                        .placeholder(R.drawable.heart_outline)
-                        .into(ivFood);
+                Picasso.with(context).load(foodDetail.getFoodImageUrl()).into(ivFood);
+//                Glide.with(context)
+//                        .load(foodDetail.getFoodImageUrl())
+//                        .listener(new RequestListener() {
+//                            @Override
+//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                ivFood.setImageResource(R.drawable.heart_outline);
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                return false;
+//                            }
+//                        })
+//                        .thumbnail(R.drawable.heart_outline)
+//                        .into(ivFood);
             }
 
             cbSubFood.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -197,8 +194,8 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     final String userId = Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID);
-                    if (userId != null) {
-                        updateFavourite(subCourseList.get(position));
+                    if (userId != null && !userId.equals("null")) {
+                        updateFavourite(userId, subCourseList.get(position));
                     } else {
                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                         alertDialog.setMessage("Login to set favourite foods.");
@@ -244,10 +241,10 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             notifier();
         }
 
-        private void updateFavourite(final FoodDetail foodDetailData) {
+        private void updateFavourite(String userID, final FoodDetail foodDetailData) {
             //TODO : Change hard coded values in UrlConstants
             String url = UrlConstants.GET_FAV_FOOD_URL
-                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID)
+                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
                     + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
                     + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.SUB_COURSE_TYPE;
             Utils.displayLoader(context, "Updating Favourite...");

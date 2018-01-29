@@ -12,10 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
+        android:theme="@style/AppToolbar">
 
         <include layout="@layout/action_bar" />
     </android.support.v7.widget.Toolbar>
+
+    <Button
+        android:id="@+id/bt_no_food"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:onClick="noFoodAction"
+        android:text="@string/text_no_main_food"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/bt_retry"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:onClick="retryFood"
+        android:text="@string/retry"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_sub_food_list"

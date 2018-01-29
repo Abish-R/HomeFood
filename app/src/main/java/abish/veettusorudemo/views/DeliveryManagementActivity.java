@@ -1,8 +1,10 @@
 package abish.veettusorudemo.views;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -28,6 +30,8 @@ import com.android.volley.VolleyLog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -49,6 +53,7 @@ import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.R.id.tv_date_time;
 import static abish.veettusorudemo.Utils.displayLoader;
+import static abish.veettusorudemo.Utils.getSavedUserDetail;
 import static abish.veettusorudemo.Utils.hideLoader;
 
 public class DeliveryManagementActivity extends AppCompatActivity implements
@@ -56,6 +61,9 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
     @Bind(R.id.bt_continue)
     Button btContinue;
+
+    @Bind(R.id.bt_cancel)
+    Button cancelAddress;
 
     @Bind(R.id.bt_add_address)
     Button addAddress;
@@ -144,10 +152,9 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     }
 
     public void addAddress(View view) {
-        if (addAddress.getText().toString().equals(getString(R.string.text_add_address)) && addressList.size() < 4) {
+        if (addAddress.getText().toString().equalsIgnoreCase(getString(R.string.text_add_address)) && addressList.size() < 4) {
             enableAddressEntryMode();
-            addAddress.setText(R.string.text_add_or_update_address);
-        } else if (addAddress.getText().toString().equals(getString(R.string.text_add_or_update_address))) {
+        } else if (addAddress.getText().toString().equalsIgnoreCase(getString(R.string.text_add_or_update_address))) {
             try {
                 validateAddress();
             } catch (Exception e) {
@@ -192,19 +199,24 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     }
 
     private void goToMakeOrders() {
-        Utils.alertOkMessage(DeliveryManagementActivity.this,
-                "Your order is confirmed. You will get the order on time. Stay with us and comment your experience with us."
-                , "OK");
-        String url = UrlConstants.SEND_ORDERS_URL + UrlConstants.ORDERS_DATA
-                + requestData.getOrderRequest(requestData);
         displayLoader(this, "Sending your Order...");
 
-        GsonRequest request = new GsonRequest<OrderResponse>(url, null,
+        String param = "";
+        try {
+            param = URLEncoder.encode(requestData.getOrderRequest(requestData), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url = UrlConstants.SEND_ORDERS_URL + UrlConstants.ORDERS_DATA + param;
+
+        GsonRequest request = new GsonRequest<OrderResponse>(
+                url, null,
                 OrderResponse.class, null, new Response.Listener<OrderResponse>() {
             @Override
             public void onResponse(OrderResponse response) {
                 if (response.isSuccess()) {
-                    sendNotification();
+                    alertOkMessage(DeliveryManagementActivity.this,
+                            response.getStatus(), "OK");
                 } else {
                     Toast.makeText(DeliveryManagementActivity.this, "Error in Server", Toast.LENGTH_SHORT).show();
                 }
@@ -218,7 +230,19 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             }
         });
         VolleyApiClient.getInstance().addToRequestQueue(request, "Order Food");
-        sendNotification();
+    }
+
+    public void alertOkMessage(Context mContext, String message, String buttonName) {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, buttonName,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        DeliveryManagementActivity.this.finish();
+                    }
+                });
+        alertDialog.show();
     }
 
     private void sendNotification() {
@@ -240,7 +264,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
     private void getUserAddress(String userId) {
         String url = UrlConstants.GET_ADDRESS_URL
-                + UrlConstants.ADDRESS_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID);
+                + UrlConstants.ADDRESS_USER_ID + getSavedUserDetail(this, Constants.LOGIN_USER_ID);
         displayLoader(this, "Receiving Address...");
 
         GsonRequest request = new GsonRequest<AddressResponse>(url, null,
@@ -280,18 +304,19 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         rvAddressList.setVisibility(View.GONE);
         llAddressEntry.setVisibility(View.VISIBLE);
         //addAddress.setVisibility(View.GONE);
-        dateTime.setVisibility(View.GONE);
-        btContinue.setVisibility(View.GONE);
+        dateTime.setVisibility(View.INVISIBLE);
+        btContinue.setVisibility(View.INVISIBLE);
         addAddress.setText(R.string.text_add_or_update_address);
+        cancelAddress.setVisibility(View.VISIBLE);
     }
 
     private void enableAddressListMode() {
         rvAddressList.setVisibility(View.VISIBLE);
         llAddressEntry.setVisibility(View.GONE);
-        //addAddress.setVisibility(View.VISIBLE);
         dateTime.setVisibility(View.VISIBLE);
         btContinue.setVisibility(View.VISIBLE);
         addAddress.setText(R.string.text_add_address);
+        cancelAddress.setVisibility(View.INVISIBLE);
     }
 
     public void orderFood(View view) {
@@ -308,7 +333,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                 }
 
                 if (isCheckedAddress) {
-                    requestData.setUserID(Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID));
+                    requestData.setUserID(getSavedUserDetail(this, Constants.LOGIN_USER_ID));
                     goToMakeOrders();
                 } else {
                     Toast.makeText(this, "Select a delivery Address", Toast.LENGTH_SHORT).show();
@@ -343,7 +368,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
     private void addOrUpdateAddress() {
         String url = UrlConstants.GET_ADDRESS_UPDATE_URL
-                + UrlConstants.ADDRESS_UPDATE_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.ADDRESS_UPDATE_USER_ID + getSavedUserDetail(this, Constants.LOGIN_USER_ID)
                 + UrlConstants.ADDRESS_UPDATE_STREET + doorStreet.getText().toString()
                 + UrlConstants.ADDRESS_UPDATE_CITY + city.getText().toString()
                 + UrlConstants.ADDRESS_UPDATE_STATE + Constants.CURRENT_STATE
@@ -352,13 +377,15 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                 + UrlConstants.ADDRESS_UPDATE_FLAG + (isPermanentEdit ? Constants.ADDRESS_PERMANENT_FLAG : Constants.ADDRESS_TEMPORARY_FLAG);
         displayLoader(this, "Updating Address...");
 
+        url = url.replaceAll(" " ,"%20");
+
         GsonRequest request = new GsonRequest<AddressResponse>(url, null,
                 AddressResponse.class, null, new Response.Listener<AddressResponse>() {
             @Override
             public void onResponse(AddressResponse response) {
                 if (response.isSuccess()) {
                     getUserAddress("");
-                } else if (response.getResponse().equals("2")) {
+                } else if (response.getResponse() == 2) {
                     Utils.alertOkMessage(DeliveryManagementActivity.this, "Maximum Address Reached, select one of them and change", "Ok");
                     getUserAddress("");
                 }
@@ -397,12 +424,14 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         doorStreet.setText(addressDetail.getStreet());
         city.setText(addressDetail.getCity());
         pinCode.setText(addressDetail.getPincode());
+        addAddress.setText(R.string.text_add_or_update_address);
+        cancelAddress.setVisibility(View.VISIBLE);
     }
 
     // From Adapter edit Address
     public void deleteAddress(final AddressData addressDetail) {
         String url = UrlConstants.GET_ADDRESS_DELETE_URL
-                + UrlConstants.ADDRESS_DELETE_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.ADDRESS_DELETE_USER_ID + getSavedUserDetail(this, Constants.LOGIN_USER_ID)
                 + UrlConstants.ADDRESS_DELETE_TEMP_ID + addressDetail.getAddressId();
         displayLoader(this, "Updating Address...");
 
@@ -426,6 +455,10 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             }
         });
         VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    public void clickCancel(View view) {
+        enableAddressListMode();
     }
 
     public class AddressListAdapter extends RecyclerView.Adapter {

@@ -20,10 +20,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +36,7 @@ import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
+import abish.veettusorudemo.views.UserLoginControlActivity;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -146,25 +144,25 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             tvCount.setText("0");
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
-                Glide.with(context)
-                        .load(foodDetailData.getFoodImageUrl())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                ivFood.setImageResource(R.drawable.heart_outline);
-                                return false;
-                            }
-                        })
-                        .error(R.drawable.heart_filled)
-                        .placeholder(R.drawable.heart_outline)
-                        .into(ivFood);
+                Picasso.with(context).load(foodDetailData.getFoodImageUrl()).into(ivFood);
+//                Glide.with(context)
+//                        .load(foodDetailData.getFoodImageUrl())
+//                        .listener(new RequestListener() {
+//                            @Override
+//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                ivFood.setImageResource(R.drawable.heart_outline);
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                return false;
+//                            }
+//                        })
+//                        .thumbnail(R.drawable.heart_outline)
+//                        .into(ivFood);
             }
 
             if (!foodDetailData.isFavourite()) {
@@ -214,7 +212,27 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             ivFavourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateFavourite(foodDetailList.get(position));
+                    final String userId = Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID);
+                    if (userId != null && !userId.equals("null")) {
+                        updateFavourite(userId, foodDetailData);
+                    } else {
+                        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                        alertDialog.setMessage("Login to set favourite foods.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        context.startActivity(new Intent(context, UserLoginControlActivity.class));
+                                    }
+                                });
+                        alertDialog.show();
+                    }
                 }
             });
         }
@@ -234,11 +252,11 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             }
         }
 
-        private void updateFavourite(final FoodDetail foodDetailData) {
+        private void updateFavourite(String userID, final FoodDetail foodDetail) {
             //TODO : Change hard coded values in UrlConstants
             String url = UrlConstants.GET_FAV_FOOD_URL
-                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID)
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
+                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
+                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetail.getId()
                     + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.MAIN_COURSE_TYPE;
             Utils.displayLoader(context, "Updating Favourite...");
 
@@ -247,7 +265,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onResponse(FoodFavouriteResponse response) {
                     if (response.isSuccess()) {
-                        foodDetailData.setFavourite(!foodDetailData.isFavourite());
+                        foodDetail.setFavourite(!foodDetail.isFavourite());
                         notifier();
                     }
                     hideLoader();

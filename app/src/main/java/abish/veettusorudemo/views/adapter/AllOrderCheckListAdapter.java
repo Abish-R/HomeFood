@@ -24,10 +24,16 @@ public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
     private Context context;
     private LayoutInflater inflater;
     private List<FoodDetail> deliveryFoodList;
+    private OnCountChangeListener listener;
 
-    public AllOrderCheckListAdapter(Context context, List<FoodDetail> deliveryFoodList) {
+    public interface OnCountChangeListener {
+        void onCountChange(FoodDetail foodDetail, int position);
+    }
+
+    public AllOrderCheckListAdapter(Context context, OnCountChangeListener listener, List<FoodDetail> deliveryFoodList) {
         this.context = context;
         this.deliveryFoodList = deliveryFoodList;
+        this.listener = listener;
         inflater = LayoutInflater.from(context);
     }
 
@@ -89,6 +95,9 @@ public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     setFoodCount(-1, position);
+                    if (listener != null) {
+                        listener.onCountChange(foodDetail, position);
+                    }
                 }
             });
 
@@ -96,6 +105,9 @@ public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     setFoodCount(1, position);
+                    if (listener != null) {
+                        listener.onCountChange(foodDetail, position);
+                    }
                 }
             });
         }

@@ -10,17 +10,38 @@
     tools:context="abish.veettusorudemo.views.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <Button
+        android:id="@+id/bt_no_food"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:onClick="noFoodAction"
+        android:text="@string/text_no_main_food"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/bt_retry"
+        style="@style/lightButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:onClick="retryFood"
+        android:text="@string/retry"
+        android:visibility="gone" />
+
     <android.support.v7.widget.RecyclerView
-        android:layout_above="@+id/delivery_timing"
         android:id="@+id/food_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/delivery_timing" />
+
     <TextView
-        android:textSize="13sp"
-        android:padding="@dimen/small_padding"
-        android:layout_alignParentBottom="true"
         android:id="@+id/delivery_timing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/small_padding"
+        android:textSize="13sp" />
 
-    </RelativeLayout>
+</RelativeLayout>

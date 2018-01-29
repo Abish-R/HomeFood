@@ -3,7 +3,6 @@ package abish.veettusorudemo.network;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,7 +48,13 @@ public class VolleyApiClient extends Application {
         // set the default tag if tag is empty
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
+        try {
+            req.getBody().toString();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         Log.i("Url Request", req.toString());
+        Log.i("Url Org URL", req.getOriginUrl().toString());
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
@@ -73,9 +78,9 @@ public class VolleyApiClient extends Application {
 //
 //        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
 //        return deviceUuid.toString();
-        String ss = Settings.Secure.getString(mInstance.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        setUniqueId(ss);
+//        String ss = Settings.Secure.getString(mInstance.getContentResolver(),
+//                Settings.Secure.ANDROID_ID);
+//        setUniqueId(ss);
     }
 
     public String getUniqueId() {

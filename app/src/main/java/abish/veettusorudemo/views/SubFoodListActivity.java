@@ -38,6 +38,7 @@ import static abish.veettusorudemo.Utils.hideLoader;
 public class SubFoodListActivity extends AppCompatActivity implements TransformIntent {
     private SubFoodListAdapter mAdapter;
     private List<FoodDetail> foodDetailList = new ArrayList<>();
+    private String mainCourseId = "";
 
     @Bind(R.id.bt_continue)
     Button btContinue;
@@ -53,6 +54,12 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
 
     @Bind(R.id.title)
     TextView toolbarTitle;
+
+    @Bind(R.id.bt_retry)
+    Button btRetry;
+
+    @Bind(R.id.bt_no_food)
+    Button btNoFood;
 
     private List<FoodDetail> subCourseList = new ArrayList<>();
     private ArrayList<FoodDetail> selectedFoodDetailList;
@@ -74,7 +81,6 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             mAdapter = new SubFoodListAdapter(this, subCourseList, this);
             rvSubFoodList.setAdapter(mAdapter);
 
-            String mainCourseId = "";
             for (FoodDetail foodDetail : selectedFoodDetailList) {
                 if (mainCourseId.isEmpty()) {
                     mainCourseId += foodDetail.getId();
@@ -82,7 +88,7 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
                     mainCourseId += "," + foodDetail.getId();
                 }
             }
-            getSubDishList(mainCourseId);
+            getSubDishList();
         }
 
         btContinue.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +122,14 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
                         }).show();
             }
         });
+    }
+
+    public void noFoodAction(View view) {
+        onBackPressed();
+    }
+
+    public void retryFood(View view) {
+        getSubDishList();
     }
 
     private void goToALLORderCheckScreen() {
@@ -154,9 +168,9 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
         return false;
     }
 
-    private void getSubDishList(String selection) {
+    private void getSubDishList() {
         //TODO : Change User ID - Tell back to provide non login users
-        String url = UrlConstants.GET_SUB_FOOD_URL + UrlConstants.SUB_FOOD_PARAM_MAIN_ID + selection
+        String url = UrlConstants.GET_SUB_FOOD_URL + UrlConstants.SUB_FOOD_PARAM_MAIN_ID + mainCourseId
                 + UrlConstants.SUB_FOOD_PARAM_USER_ID + "2";
         displayLoader(this, "Receiving Food List...");
 
@@ -165,9 +179,11 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             @Override
             public void onResponse(FoodListResponse response) {
                 Log.d("Food categories Ok", response.toString());
-                if (response.isSuccess()) {
+                if (response.isSuccess() && !response.getFoodList().isEmpty()) {
                     subCourseList.addAll(response.getFoodList());
                     mAdapter.notifyDataSetChanged();
+                } else {
+                    setNoDataLogic(false);
                 }
                 hideLoader();
             }
@@ -176,9 +192,22 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Error: " + error.getMessage());
                 hideLoader();
+                setNoDataLogic(true);
             }
         });
         VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    private void setNoDataLogic(boolean isRetry) {
+        if (isRetry) {
+            btRetry.setVisibility(View.VISIBLE);
+            btNoFood.setVisibility(View.GONE);
+        } else {
+            btNoFood.setVisibility(View.VISIBLE);
+            btRetry.setVisibility(View.GONE);
+        }
+        foodDetailList.clear();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

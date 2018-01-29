@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
 
 /**
@@ -32,9 +33,14 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashActivity.this, UserLoginControlActivity.class);
-                mainIntent.putExtra(Constants.LOGIN_TRANSITION_DECIDER, Constants.LOGIN_AFTER_LOCATION);
-                startActivity(mainIntent);
+                Intent intent;
+                if(Utils.getSavedUserDetail(SplashActivity.this, Constants.LOGIN_USER_ID).equals("null")) {
+                    intent = new Intent(SplashActivity.this, UserLoginControlActivity.class);
+                    intent.putExtra(Constants.LOGIN_TRANSITION_DECIDER, Constants.LOGIN_AFTER_LOCATION);
+                } else{
+                    intent = new Intent(SplashActivity.this, LocationSelectionActivity.class);
+                }
+                startActivity(intent);
                 finish();
                 overridePendingTransitionExit();
             }

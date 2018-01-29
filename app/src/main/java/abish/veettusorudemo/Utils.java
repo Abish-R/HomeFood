@@ -66,12 +66,14 @@ public class Utils {
                                                    DialogInterface cancel, DialogInterface ok) {
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setMessage(message);
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        if(cancel != null) {
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+        }
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

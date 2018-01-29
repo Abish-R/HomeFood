@@ -17,7 +17,7 @@ public class UrlConstants {
     public static String GET_ADDRESS_URL = BASE_URL + "getuseraddresses.php";
     public static String GET_ADDRESS_UPDATE_URL = BASE_URL + "addorupdateaddress.php";
     public static String GET_ADDRESS_DELETE_URL = BASE_URL + "deletetemproryaddress.php";
-    public static String SEND_ORDERS_URL = BASE_URL + "addOrder.php";
+    public static String SEND_ORDERS_URL = BASE_URL + "addOrder.php?";
 
     //Url Params
     public static String MAIN_FOOD_PARAM_FOOD_CATEGORY = "?food_category=";
@@ -62,5 +62,5 @@ public class UrlConstants {
     public static String ADDRESS_DELETE_USER_ID = "?user_id=";
     public static String ADDRESS_DELETE_TEMP_ID = "&temp_add_id=";
 
-    public static String ORDERS_DATA = "?orderData=";
+    public static String ORDERS_DATA = "orderData=";
 }

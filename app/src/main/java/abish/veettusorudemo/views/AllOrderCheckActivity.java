@@ -23,7 +23,7 @@ import abish.veettusorudemo.views.adapter.AllOrderCheckListAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AllOrderCheckActivity extends AppCompatActivity {
+public class AllOrderCheckActivity extends AppCompatActivity implements AllOrderCheckListAdapter.OnCountChangeListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolBar;
@@ -38,7 +38,7 @@ public class AllOrderCheckActivity extends AppCompatActivity {
     RecyclerView deliveryRecyclerView;
 
     private ArrayList<FoodDetail> selectedFoodDetailList;
-    private int totalPayable = 0;
+    private AllOrderCheckListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +52,20 @@ public class AllOrderCheckActivity extends AppCompatActivity {
         selectedFoodDetailList = bundle.getParcelableArrayList(Constants.ALL_SELECTED_FOOD_LIST);
 
         if (selectedFoodDetailList != null) {
-            AllOrderCheckListAdapter mAdapter = new AllOrderCheckListAdapter(this, selectedFoodDetailList);
+            mAdapter = new AllOrderCheckListAdapter(this, this, selectedFoodDetailList);
             deliveryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             deliveryRecyclerView.setAdapter(mAdapter);
 
-            for (FoodDetail foodDetail : selectedFoodDetailList) {
-                totalPayable += foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber();
-            }
-            btOrder.setText(getString(R.string.text_order, " Rs. " + totalPayable));
+            totalPrice();
         }
+    }
+
+    private void totalPrice() {
+        int totalPayable = 0;
+        for (FoodDetail foodDetail : selectedFoodDetailList) {
+            totalPayable += foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber();
+        }
+        btOrder.setText(getString(R.string.text_order, " Rs. " + totalPayable));
     }
 
     @Override
@@ -129,5 +134,16 @@ public class AllOrderCheckActivity extends AppCompatActivity {
      */
     protected void overridePendingTransitionExit() {
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
+    @Override
+    public void onCountChange(FoodDetail foodDetail, int position) {
+        totalPrice();
+        if (foodDetail.getSelectedFoodCountNumber() < 1) {
+            selectedFoodDetailList.remove(position);
+        } else {
+            selectedFoodDetailList.set(position, foodDetail);
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

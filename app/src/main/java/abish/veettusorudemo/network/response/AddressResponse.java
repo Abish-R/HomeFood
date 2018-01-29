@@ -13,16 +13,16 @@ import abish.veettusorudemo.network.model.AddressData;
 
 public class AddressResponse implements ResponseSuccessFinder {
 
-    @SerializedName ("status")
+    @SerializedName("status")
     private String status;
 
-    @SerializedName ("response")
-    private String response;
+    @SerializedName("response")
+    private int response;
 
-    @SerializedName ("address")
+    @SerializedName("address")
     private List<AddressData> addressList;
 
-    public AddressResponse(){
+    public AddressResponse() {
 
     }
 
@@ -34,11 +34,11 @@ public class AddressResponse implements ResponseSuccessFinder {
         this.status = status;
     }
 
-    public String getResponse() {
+    public int getResponse() {
         return response;
     }
 
-    public void setResponse(String response) {
+    public void setResponse(int response) {
         this.response = response;
     }
 
@@ -52,6 +52,6 @@ public class AddressResponse implements ResponseSuccessFinder {
 
     @Override
     public boolean isSuccess() {
-        return "1".equals(getResponse());
+        return 1 == getResponse();
     }
 }

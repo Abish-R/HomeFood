@@ -63,4 +63,6 @@
     <string name="text_add_or_update_address">Add / Update</string>
     <string name="text_zero">0</string>
     <string name="text_add">ADD</string>
+    <string name="text_no_main_food">No food in selected category./nTry Another</string>
+    <string name="text_go_back">Go Back</string>
 </resources>

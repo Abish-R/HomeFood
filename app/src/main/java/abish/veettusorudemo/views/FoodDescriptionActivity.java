@@ -1,6 +1,7 @@
 package abish.veettusorudemo.views;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -10,17 +11,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
 
+import abish.veettusorudemo.ActivityFoodDetailUpdater;
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
@@ -63,8 +63,8 @@ public class FoodDescriptionActivity extends AppCompatActivity {
     @Bind(R.id.tv_description)
     TextView tvDescription;
 
-    @Bind(R.id.bt_add)
-    Button btAdd;
+//    @Bind(R.id.bt_add)
+//    Button btAdd;
 
     @Bind(R.id.bt_back)
     Button btBack;
@@ -77,6 +77,9 @@ public class FoodDescriptionActivity extends AppCompatActivity {
 
     @Bind(R.id.title)
     TextView toolbarTitle;
+
+    @Bind(R.id.progressbar)
+    ProgressBar progressBar;
 
     private FoodDetail foodDetailData;
 
@@ -103,23 +106,26 @@ public class FoodDescriptionActivity extends AppCompatActivity {
             }
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
-                Glide.with(this)
-                        .load(foodDetailData.getFoodImageUrl())
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                //progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                //progressBar.setVisibility(View.GONE);
-                                ivFood.setImageResource(R.drawable.heart_outline);
-                                return false;
-                            }
-                        })
-                        .into(ivFood);
+                progressBar.setVisibility(View.GONE);
+                Picasso.with(this).load(foodDetailData.getFoodImageUrl()).into(ivFood);
+//                Glide.with(this)
+//                        .load(foodDetailData.getFoodImageUrl())
+//                        .listener(new RequestListener() {
+//                            @Override
+//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                return false;
+//                            }
+//
+//                            @Override
+//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                                progressBar.setVisibility(View.GONE);
+//                                ivFood.setImageResource(R.drawable.heart_outline);
+//                                return false;
+//                            }
+//                        })
+//                        .thumbnail(R.drawable.heart_outline)
+//                        .into(ivFood);
             }
         }
 
@@ -159,18 +165,38 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         ivFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateFavourite();
+                final String userId = Utils.getSavedUserDetail(FoodDescriptionActivity.this, Constants.LOGIN_USER_ID);
+                if (userId != null && !userId.equals("null")) {
+                    updateFavourite(userId);
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(FoodDescriptionActivity.this).create();
+                    alertDialog.setMessage("Login to set favourite foods.");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    startActivity(new Intent(FoodDescriptionActivity.this, UserLoginControlActivity.class));
+                                }
+                            });
+                    alertDialog.show();
+                }
             }
         });
 
-        btAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvCount.setText("1");
-                controls.setVisibility(View.VISIBLE);
-                btAdd.setVisibility(View.INVISIBLE);
-            }
-        });
+//        btAdd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                tvCount.setText("1");
+//                controls.setVisibility(View.VISIBLE);
+//                btAdd.setVisibility(View.INVISIBLE);
+//            }
+//        });
 
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,10 +238,10 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         }
     }
 
-    private void updateFavourite() {
+    private void updateFavourite(String userID) {
         //TODO : Change hard coded values in UrlConstants
         String url = UrlConstants.GET_FAV_FOOD_URL
-                + UrlConstants.FAV_FOOD_PARAM_USER_ID + Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
                 + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
                 + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.MAIN_COURSE_TYPE;
         Utils.displayLoader(this, "Updating Favourite...");
@@ -226,6 +252,7 @@ public class FoodDescriptionActivity extends AppCompatActivity {
             public void onResponse(FoodFavouriteResponse response) {
                 if (response.isSuccess()) {
                     foodDetailData.setFavourite(!foodDetailData.isFavourite());
+                    ivFavourite.setImageDrawable(null);
                     if (!foodDetailData.isFavourite()) {
                         ivFavourite.setImageResource(R.drawable.heart_filled);
                     } else {
@@ -246,6 +273,7 @@ public class FoodDescriptionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        ActivityFoodDetailUpdater.getInstance().changeState(true);
         finish();
         overridePendingTransitionExit();
     }

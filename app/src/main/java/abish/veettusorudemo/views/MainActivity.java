@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -25,7 +26,9 @@ import com.android.volley.VolleyLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import abish.veettusorudemo.ActivityFoodDetailUpdater;
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
@@ -41,7 +44,8 @@ import static abish.veettusorudemo.Utils.displayLoader;
 import static abish.veettusorudemo.Utils.hideLoader;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TransformIntent {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        TransformIntent, ActivityFoodDetailUpdater.ActivityRefresh {
 
     @Bind(R.id.delivery_timing)
     TextView deliveryTiming;
@@ -55,7 +59,14 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.title)
     TextView toolbarTitle;
 
+    @Bind(R.id.bt_no_food)
+    Button btNoFood;
+
+    @Bind(R.id.bt_retry)
+    Button btRetry;
+
     private FoodCategory foodCategoryData;
+    private String foodCategoryID;
     private String foodCategory;
     private String foodCategoryTiming;
     private FoodListAdapter mAdapter;
@@ -75,7 +86,7 @@ public class MainActivity extends AppCompatActivity
             foodCategoryData = getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY);
             if (foodCategoryData != null) {
                 foodCategory = foodCategoryData.getCategoryName();
-                foodCategoryTiming = foodCategoryData.getCategoryName();
+                foodCategoryTiming = foodCategoryData.getOrderTiming();
                 deliveryTiming.setText("For party, make your order by " + foodCategoryTiming + " of same day");
             }
         }
@@ -83,7 +94,8 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new FoodListAdapter(this, foodDetailList, this);
         foodListRecycler.setAdapter(mAdapter);
 
-        getMainDishList(foodCategoryData.getId());
+        foodCategoryID = foodCategoryData.getId();
+        getMainDishList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -119,21 +131,34 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
-    private void getMainDishList(String selection) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void getMainDishList() {
         //TODO : Change User ID - Tell back to provide non login users
-        String url = UrlConstants.GET_MAIN_FOOD_URL + UrlConstants.MAIN_FOOD_PARAM_FOOD_CATEGORY + selection
-                + UrlConstants.MAIN_FOOD_PARAM_USER_ID + "2";
+        String userID = Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID);
+        userID = userID.equals("null") ? "0" : userID;
+
+        String url = UrlConstants.GET_MAIN_FOOD_URL + UrlConstants.MAIN_FOOD_PARAM_FOOD_CATEGORY + foodCategoryID
+                + UrlConstants.MAIN_FOOD_PARAM_USER_ID + userID;
         displayLoader(this, "Receiving Food List...");
 
         GsonRequest request = new GsonRequest<FoodListResponse>(url, null,
                 FoodListResponse.class, null, new Response.Listener<FoodListResponse>() {
             @Override
             public void onResponse(FoodListResponse response) {
-                if (response.isSuccess()) {
+                if (response.isSuccess() && !response.getFoodList().isEmpty()) {
                     foodDetailList.addAll(response.getFoodList());
                     mAdapter.notifyDataSetChanged();
+                } else {
+                    setNoDataLogic(false);
                 }
                 hideLoader();
             }
@@ -142,9 +167,30 @@ public class MainActivity extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Error: " + error.getMessage());
                 hideLoader();
+                setNoDataLogic(true);
             }
         });
         VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    private void setNoDataLogic(boolean isRetry) {
+        if (isRetry) {
+            btRetry.setVisibility(View.VISIBLE);
+            btNoFood.setVisibility(View.GONE);
+        } else {
+            btNoFood.setVisibility(View.VISIBLE);
+            btRetry.setVisibility(View.GONE);
+        }
+        foodDetailList.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void noFoodAction(View view) {
+        onBackPressed();
+    }
+
+    public void retryFood(View view) {
+        getMainDishList();
     }
 
     private void setTitle() {
@@ -180,15 +226,18 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.option1) {
             foodDetailList.clear();
-            getMainDishList(foodCategoryData.getId());
+            foodCategoryID = "1";
+            getMainDishList();
             return true;
         } else if (id == R.id.option2) {
             foodDetailList.clear();
-            getMainDishList(foodCategoryData.getId());
+            foodCategoryID = "2";
+            getMainDishList();
             return true;
         } else if (id == R.id.option3) {
             foodDetailList.clear();
-            getMainDishList(foodCategoryData.getId());
+            foodCategoryID = "3";
+            getMainDishList();
             return true;
         }
 
@@ -259,5 +308,10 @@ public class MainActivity extends AppCompatActivity
      */
     protected void overridePendingTransitionExit() {
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
+    @Override
+    public void refreshData() {
+
     }
 }
