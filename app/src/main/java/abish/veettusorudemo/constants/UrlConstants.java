@@ -26,9 +26,7 @@ public class UrlConstants {
     public static String SUB_FOOD_PARAM_MAIN_ID = "?main_course_id=";
     public static String SUB_FOOD_PARAM_USER_ID = "&user_id=";
 
-    public static String SIGN_UP_PARAM_FIRST_NAME = "?first_name=";
-    public static String SIGN_UP_PARAM_LAST_NAME = "&last_name=";
-    public static String SIGN_UP_PARAM_USER_NAME = "&user_name=";
+    public static String SIGN_UP_PARAM_NAME = "?name=";
     public static String SIGN_UP_PARAM_PASSWORD = "&password=";
     public static String SIGN_UP_PARAM_EMAIL = "&email=";
     public static String SIGN_UP_PARAM_MOBILE = "&mobile=";
@@ -37,6 +35,7 @@ public class UrlConstants {
     public static String SIGN_UP_PARAM_STATE = "&state=";
     public static String SIGN_UP_PARAM_Country = "&country=";
     public static String SIGN_UP_PARAM_PINCODE = "&pincode=";
+    public static String SIGN_UP_PARAM_ADDRESS_FLAG = "&address_flag=";
     public static String SIGN_UP_PARAM_DEVICE_TOKEN = "&deviceToken=";
 
     public static String LOGIN_PARAM_USERNAME = "?user_name=";

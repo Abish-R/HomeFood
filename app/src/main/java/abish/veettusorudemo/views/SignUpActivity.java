@@ -18,6 +18,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.Utils;
+import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
@@ -25,6 +27,7 @@ import abish.veettusorudemo.network.response.FoodListResponse;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static abish.veettusorudemo.Utils.alertOkMessage;
 import static abish.veettusorudemo.Utils.displayLoader;
 import static abish.veettusorudemo.Utils.hideLoader;
 
@@ -96,6 +99,15 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (layoutAddress.getVisibility() == View.VISIBLE) {
+            editAccountCreation();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void setTitle() {
         toolbarTitle.setText(R.string.title_sign_up);
         setSupportActionBar(toolBar);
@@ -106,10 +118,14 @@ public class SignUpActivity extends AppCompatActivity {
             validateUserEntries();
             layoutUserInfo.setVisibility(View.GONE);
             layoutAddress.setVisibility(View.VISIBLE);
-            btLogon.setVisibility(View.GONE);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void editAccountCreation() {
+        layoutUserInfo.setVisibility(View.VISIBLE);
+        layoutAddress.setVisibility(View.GONE);
     }
 
     private void validateUserEntries() throws Exception {
@@ -138,9 +154,7 @@ public class SignUpActivity extends AppCompatActivity {
             throw new Exception("Passwords not matching");
         }
 
-        signUpValues.append(UrlConstants.SIGN_UP_PARAM_FIRST_NAME).append(etName.getText().toString())
-                .append(UrlConstants.SIGN_UP_PARAM_LAST_NAME).append(etPhone.getText().toString())
-                .append(UrlConstants.SIGN_UP_PARAM_USER_NAME).append(etPhone.getText().toString())
+        signUpValues.append(UrlConstants.SIGN_UP_PARAM_NAME).append(etName.getText().toString())
                 .append(UrlConstants.SIGN_UP_PARAM_PASSWORD).append(etPassword.getText().toString())
                 .append(UrlConstants.SIGN_UP_PARAM_EMAIL).append(etEmail.getText().toString())
                 .append(UrlConstants.SIGN_UP_PARAM_MOBILE).append(etPhone.getText().toString());
@@ -178,12 +192,24 @@ public class SignUpActivity extends AppCompatActivity {
                 .append(UrlConstants.SIGN_UP_PARAM_STATE).append(etState.getText().toString())
                 .append(UrlConstants.SIGN_UP_PARAM_Country).append("India")
                 .append(UrlConstants.SIGN_UP_PARAM_PINCODE).append(etPinCode.getText().toString())
-                .append(UrlConstants.SIGN_UP_PARAM_DEVICE_TOKEN).append(etPinCode.getText().toString());
+                .append(UrlConstants.SIGN_UP_PARAM_ADDRESS_FLAG).append(cbPermanentAddress.isChecked() ? 1 : 2)
+                .append(UrlConstants.SIGN_UP_PARAM_DEVICE_TOKEN).append(Utils.getSavedUserDetail(this, Constants.FCM_TOKEN));
         processSignUp();
     }
 
-    public void checkAddress(View view) {
-        setCheckBoxChecked(cbPermanentAddress.isChecked());
+    public void checkPAddress(View view) {
+        if(cbPermanentAddress.isChecked()){
+            setCheckBoxChecked(false);
+        } else {
+            setCheckBoxChecked(true);
+        }
+    }
+    public void checkTAddress(View view) {
+        if(cbTemporaryAddress.isChecked()){
+            setCheckBoxChecked(true);
+        } else {
+            setCheckBoxChecked(false);
+        }
     }
 
     private void setCheckBoxChecked(boolean isCheckedPermanentAddress) {
@@ -205,9 +231,17 @@ public class SignUpActivity extends AppCompatActivity {
                 FoodListResponse.class, null, new Response.Listener<FoodListResponse>() {
             @Override
             public void onResponse(FoodListResponse response) {
-                Log.d("Sign Up Ok", response.toString());
-
                 hideLoader();
+                if (response.isSuccess()) {
+                    Log.d("Sign Up Ok", response.toString());
+                    Intent intent = new Intent(SignUpActivity.this, UserLoginControlActivity.class);
+                    intent.putExtra(Constants.LOGIN_TRANSITION_DECIDER, Constants.LOGIN_AFTER_LOCATION);
+                    startActivity(intent);
+                    finish();
+                    overridePendingTransitionExit();
+                } else {
+                    alertOkMessage(SignUpActivity.this, response.getStatus(), getString(R.string.mdtp_ok));
+                }
             }
         }, new Response.ErrorListener() {
             @Override

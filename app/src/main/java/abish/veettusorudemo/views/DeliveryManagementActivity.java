@@ -68,6 +68,9 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     @Bind(R.id.bt_add_address)
     Button addAddress;
 
+    @Bind(R.id.bt_retry)
+    Button retry;
+
     @Bind(tv_date_time)
     TextView dateTime;
 
@@ -282,6 +285,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Error: " + error.getMessage());
+                retry.setVisibility(View.VISIBLE);
                 hideLoader();
             }
         });
@@ -377,7 +381,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                 + UrlConstants.ADDRESS_UPDATE_FLAG + (isPermanentEdit ? Constants.ADDRESS_PERMANENT_FLAG : Constants.ADDRESS_TEMPORARY_FLAG);
         displayLoader(this, "Updating Address...");
 
-        url = url.replaceAll(" " ,"%20");
+        url = url.replaceAll(" ", "%20");
 
         GsonRequest request = new GsonRequest<AddressResponse>(url, null,
                 AddressResponse.class, null, new Response.Listener<AddressResponse>() {
@@ -459,6 +463,11 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
     public void clickCancel(View view) {
         enableAddressListMode();
+    }
+
+    public void noAddress(View view) {
+        view.setVisibility(View.GONE);
+        getUserAddress("");
     }
 
     public class AddressListAdapter extends RecyclerView.Adapter {
