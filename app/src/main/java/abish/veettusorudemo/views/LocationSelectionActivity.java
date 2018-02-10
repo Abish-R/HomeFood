@@ -133,8 +133,8 @@ public class LocationSelectionActivity extends AppCompatActivity {
     private ArrayList<String> getLoc(LocationResponse response) {
         locationList.add("Select Location");
         for (int i = 0; i < response.getLocationList().size(); i++) {
-            locationList.add(response.getLocationList().get(0).getCity() + " - " +
-                    response.getLocationList().get(0).getCity());
+            locationList.add(response.getLocationList().get(i).getCity() + " - " +
+                    response.getLocationList().get(i).getStreet());
         }
         return locationList;
     }

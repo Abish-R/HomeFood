@@ -14,10 +14,11 @@ import org.json.JSONObject;
 import java.util.Map;
 
 import abish.veettusorudemo.NotificationUtils;
-import abish.veettusorudemo.views.MainActivity;
+import abish.veettusorudemo.views.SplashActivity;
 
 /**
  * Created by Abish on 11/25/2017.
+ * </p>
  */
 
 public class HotelAppNotificationService extends FirebaseMessagingService {
@@ -30,13 +31,10 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.e(TAG, "From: " + remoteMessage.getFrom());
 
-        if (remoteMessage == null)
-            return;
-
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
-            handleNotification(remoteMessage.getNotification().getBody());
+            handleNotification();
         }
 
         // Check if message contains a data payload.
@@ -53,18 +51,11 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
         }
     }
 
-    private void handleNotification(String message) {
+    private void handleNotification() {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
-            // app is in foreground, broadcast the push message
-//            Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-//            pushNotification.putExtra("message", message);
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
             // play notification sound
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
             notificationUtils.playNotificationSound();
-        } else {
-            // If the app is in background, firebase itself handles the notification
         }
     }
 
@@ -72,7 +63,6 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
         Log.e(TAG, "push json: " + json.toString());
 
         try {
-//            JSONObject data = json.getJSONObject("data");
             String title = "", message = "", imageUrl = "", timestamp = "";
             if (json.has("title")) {
                 title = json.getString("title");
@@ -91,7 +81,7 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
             Log.e(TAG, "message: " + message);
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
-            Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent resultIntent = new Intent(getApplicationContext(), SplashActivity.class);
             resultIntent.putExtra("message", message);
 
             // check for image attachment
@@ -101,29 +91,6 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
                 // image is present, show notification with image
                 showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
             }
-
-//            if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
-//                // app is in foreground, broadcast the push message
-////                Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-////                pushNotification.putExtra("message", message);
-////                LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-//
-//                // play notification sound
-//                NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-//                notificationUtils.playNotificationSound();
-//            } else {
-//                // app is in background, show the notification in notification tray
-//                Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-//                resultIntent.putExtra("message", message);
-//
-//                // check for image attachment
-//                if (TextUtils.isEmpty(imageUrl)) {
-//                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-//                } else {
-//                    // image is present, show notification with image
-//                    showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
-//                }
-//            }
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());
         } catch (Exception e) {
