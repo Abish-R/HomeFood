@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import abish.veettusorudemo.network.response.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
 import abish.veettusorudemo.views.UserLoginControlActivity;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.hideLoader;
@@ -82,31 +83,31 @@ public class FoodListAdapter extends RecyclerView.Adapter {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.share_food)
+        @BindView(R.id.share_food)
         ImageView shareFood;
 
-        @Bind(R.id.iv_food)
+        @BindView(R.id.iv_food)
         ImageView ivFood;
 
-        @Bind(R.id.iv_minus)
+        @BindView(R.id.iv_minus)
         ImageView ivMinus;
 
-        @Bind(R.id.iv_plus)
+        @BindView(R.id.iv_plus)
         ImageView ivPlus;
 
-        @Bind(R.id.iv_favourite)
+        @BindView(R.id.iv_favourite)
         ImageView ivFavourite;
 
-        @Bind(R.id.tv_food_name)
+        @BindView(R.id.tv_food_name)
         TextView tvFoodName;
 
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
 
-        @Bind(R.id.tv_count)
+        @BindView(R.id.tv_count)
         TextView tvCount;
 
-        @Bind(R.id.progress_bar)
+        @BindView(R.id.progress_bar)
         ProgressBar progressBar;
 
         private MyViewHolder(View itemView) {
@@ -144,25 +145,19 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             tvCount.setText("0");
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
-                Picasso.with(context).load(foodDetailData.getFoodImageUrl()).into(ivFood);
-//                Glide.with(context)
-//                        .load(foodDetailData.getFoodImageUrl())
-//                        .listener(new RequestListener() {
-//                            @Override
-//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                ivFood.setImageResource(R.drawable.heart_outline);
-//                                return false;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                return false;
-//                            }
-//                        })
-//                        .thumbnail(R.drawable.heart_outline)
-//                        .into(ivFood);
+                Picasso.with(context).load(foodDetailData.getFoodImageUrl()).into(ivFood,
+                        new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                progressBar.setVisibility(View.GONE);
+                                ivFood.setImageResource(R.color.light_grey);
+                            }
+                        });
             }
 
             if (!foodDetailData.isFavourite()) {

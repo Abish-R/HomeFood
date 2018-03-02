@@ -17,4 +17,5 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="white_different">#66ecfaf0</color>
+    <color name="light_grey">#9f9f9f</color>
 </resources>

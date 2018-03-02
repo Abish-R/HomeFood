@@ -9,6 +9,7 @@ import abish.veettusorudemo.network.model.AddressData;
 
 /**
  * Created by Abish on 8/17/2017.
+ * </p>
  */
 
 public class AddressResponse implements ResponseSuccessFinder {
@@ -21,6 +22,9 @@ public class AddressResponse implements ResponseSuccessFinder {
 
     @SerializedName("address")
     private List<AddressData> addressList;
+
+    @SerializedName("deliveryTime")
+    private List<String> deliveryTime;
 
     public AddressResponse() {
 
@@ -48,6 +52,14 @@ public class AddressResponse implements ResponseSuccessFinder {
 
     public void setAddressList(List<AddressData> addressList) {
         this.addressList = addressList;
+    }
+
+    public List<String> getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(List<String> deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 
     @Override

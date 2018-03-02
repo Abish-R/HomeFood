@@ -27,7 +27,7 @@ import abish.veettusorudemo.network.response.FoodCategoryResponse;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.R;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -36,13 +36,13 @@ import static abish.veettusorudemo.Utils.hideLoader;
 
 public class FoodCategorySelectionActivity extends AppCompatActivity {
 
-    @Bind(R.id.rv_food_category)
+    @BindView(R.id.rv_food_category)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
     @Override
@@ -126,10 +126,10 @@ public class FoodCategorySelectionActivity extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            @Bind(R.id.bt_food_category)
+            @BindView(R.id.bt_food_category)
             Button btFoodCategory;
 
-            @Bind(R.id.tv_category_info)
+            @BindView(R.id.tv_category_info)
             TextView tvCategoryInfo;
 
             FoodCategory foodCategory;

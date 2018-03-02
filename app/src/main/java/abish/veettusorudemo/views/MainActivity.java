@@ -37,7 +37,7 @@ import abish.veettusorudemo.network.model.FoodCategory;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodListResponse;
 import abish.veettusorudemo.views.adapter.FoodListAdapter;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.displayLoader;
@@ -47,22 +47,22 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         TransformIntent, ActivityFoodDetailUpdater.ActivityRefresh {
 
-    @Bind(R.id.delivery_timing)
+    @BindView(R.id.delivery_timing)
     TextView deliveryTiming;
 
-    @Bind(R.id.food_list)
+    @BindView(R.id.food_list)
     RecyclerView foodListRecycler;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.bt_no_food)
+    @BindView(R.id.bt_no_food)
     Button btNoFood;
 
-    @Bind(R.id.bt_retry)
+    @BindView(R.id.bt_retry)
     Button btRetry;
 
     private FoodCategory foodCategoryData;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
         foodListRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        if (getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY) != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY) != null) {
             foodCategoryData = getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY);
             if (foodCategoryData != null) {
                 foodCategory = foodCategoryData.getCategoryName();
@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity
                 if (!selectedFoodDetailList.isEmpty()) {
                     Intent intent = new Intent(MainActivity.this, SubFoodListActivity.class);
                     intent.putParcelableArrayListExtra(Constants.SELECTED_MAIN_FOODS, selectedFoodDetailList);
+                    intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryID);
                     startActivity(intent);
                 } else {
                     alertFoodAtLeastOne();

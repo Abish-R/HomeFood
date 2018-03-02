@@ -24,7 +24,7 @@ import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodListResponse;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.alertOkMessage;
@@ -33,58 +33,58 @@ import static abish.veettusorudemo.Utils.hideLoader;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.et_name)
+    @BindView(R.id.et_name)
     EditText etName;
 
-    @Bind(R.id.et_phone)
+    @BindView(R.id.et_phone)
     EditText etPhone;
 
-    @Bind(R.id.et_email)
+    @BindView(R.id.et_email)
     EditText etEmail;
 
-    @Bind(R.id.et_password)
+    @BindView(R.id.et_password)
     EditText etPassword;
 
-    @Bind(R.id.et_confirm_password)
+    @BindView(R.id.et_confirm_password)
     EditText etConfirmPassword;
 
-    @Bind(R.id.et_street)
+    @BindView(R.id.et_street)
     EditText etStreet;
 
-    @Bind(R.id.et_city)
+    @BindView(R.id.et_city)
     EditText etCity;
 
-    @Bind(R.id.et_state)
+    @BindView(R.id.et_state)
     EditText etState;
 
-    @Bind(R.id.et_pinCode)
+    @BindView(R.id.et_pinCode)
     EditText etPinCode;
 
-    @Bind(R.id.cb_permanent_address)
+    @BindView(R.id.cb_permanent_address)
     CheckBox cbPermanentAddress;
 
-    @Bind(R.id.cb_temporary_address)
+    @BindView(R.id.cb_temporary_address)
     CheckBox cbTemporaryAddress;
 
-    @Bind(R.id.bt_continue)
+    @BindView(R.id.bt_continue)
     Button btContinue;
 
-    @Bind(R.id.bt_create_account)
+    @BindView(R.id.bt_create_account)
     Button btCreateAccount;
 
-    @Bind(R.id.bt_logon)
+    @BindView(R.id.bt_logon)
     TextView btLogon;
 
-    @Bind(R.id.layout_user_info)
+    @BindView(R.id.layout_user_info)
     RelativeLayout layoutUserInfo;
 
-    @Bind(R.id.layout_address)
+    @BindView(R.id.layout_address)
     RelativeLayout layoutAddress;
 
     private StringBuilder signUpValues = new StringBuilder();

@@ -23,49 +23,45 @@ import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.LoginResponse;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.displayLoader;
 import static abish.veettusorudemo.Utils.hideLoader;
 
-//import abish.veettusorudemo.constants.UrlConstants;
-
-//import abish.veettusorudemo.constants.UrlConstants;
-
 public class UserLoginControlActivity extends AppCompatActivity {
 
-    @Bind(R.id.input_layout_email)
+    @BindView(R.id.input_layout_email)
     TextInputLayout inputLayoutEmail;
 
-    @Bind(R.id.input_layout_mobile)
+    @BindView(R.id.input_layout_mobile)
     TextInputLayout inputLayoutMobile;
 
-    @Bind(R.id.et_email)
+    @BindView(R.id.et_email)
     EditText etEmail;
 
-    @Bind(R.id.et_mobile)
+    @BindView(R.id.et_mobile)
     EditText etMobile;
 
-    @Bind(R.id.et_password)
+    @BindView(R.id.et_password)
     EditText etPassword;
 
-    @Bind(R.id.iv_switch_mobile_email)
+    @BindView(R.id.iv_switch_mobile_email)
     ImageView ivSwitchMobileEmail;
 
-    @Bind(R.id.bt_login)
+    @BindView(R.id.bt_login)
     Button btLogin;
 
-    @Bind(R.id.tv_sign_up)
+    @BindView(R.id.tv_sign_up)
     TextView tvSignUp;
 
-    @Bind(R.id.tv_skip_login)
+    @BindView(R.id.tv_skip_login)
     TextView tvSkipLogin;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
     private int loginTransition;

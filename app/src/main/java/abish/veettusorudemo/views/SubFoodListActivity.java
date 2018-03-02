@@ -29,7 +29,7 @@ import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodListResponse;
 import abish.veettusorudemo.views.adapter.SubFoodListAdapter;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.displayLoader;
@@ -40,29 +40,30 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     private List<FoodDetail> foodDetailList = new ArrayList<>();
     private String mainCourseId = "";
 
-    @Bind(R.id.bt_continue)
+    @BindView(R.id.bt_continue)
     Button btContinue;
 
-    @Bind(R.id.bt_place_order)
+    @BindView(R.id.bt_place_order)
     Button btPlaceOrder;
 
-    @Bind(R.id.rv_sub_food_list)
+    @BindView(R.id.rv_sub_food_list)
     RecyclerView rvSubFoodList;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.bt_retry)
+    @BindView(R.id.bt_retry)
     Button btRetry;
 
-    @Bind(R.id.bt_no_food)
+    @BindView(R.id.bt_no_food)
     Button btNoFood;
 
     private List<FoodDetail> subCourseList = new ArrayList<>();
     private ArrayList<FoodDetail> selectedFoodDetailList;
+    private String foodCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,20 +75,24 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
 
         rvSubFoodList.setLayoutManager(new LinearLayoutManager(this));
 
-        selectedFoodDetailList = getIntent().getExtras().
-                getParcelableArrayList(Constants.SELECTED_MAIN_FOODS);
+        if (getIntent().getExtras() != null) {
+            selectedFoodDetailList = getIntent().getExtras().getParcelableArrayList(Constants.SELECTED_MAIN_FOODS);
+            foodCategoryId = getIntent().getExtras().getString(Constants.SELECTED_FOOD_CATEGORY_ID);
+        }
 
         if (selectedFoodDetailList != null) {
             mAdapter = new SubFoodListAdapter(this, subCourseList, this);
             rvSubFoodList.setAdapter(mAdapter);
 
+            StringBuilder stringBuilder = new StringBuilder();
             for (FoodDetail foodDetail : selectedFoodDetailList) {
-                if (mainCourseId.isEmpty()) {
-                    mainCourseId += foodDetail.getId();
+                if (stringBuilder.toString().isEmpty()) {
+                    stringBuilder.append(foodDetail.getId());
                 } else {
-                    mainCourseId += "," + foodDetail.getId();
+                    stringBuilder.append(",").append(foodDetail.getId());
                 }
             }
+            mainCourseId = stringBuilder.toString();
             getSubDishList();
         }
 
@@ -116,7 +121,6 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
                         .setMessage("Your order is placed successfully. Few more steps to confirm again!")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-//                                Intent intent = new Intent(SubFoodListActivity.this, UserLoginControlActivity.class);
                                 goToALLORderCheckScreen();
                             }
                         }).show();
@@ -141,6 +145,7 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
         }
         Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
         intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
+        intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
         startActivity(intent);
         finish();
     }
@@ -154,9 +159,10 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     private void setTitle() {
         toolbarTitle.setText(R.string.title_sub_food_category);
         setSupportActionBar(toolBar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override
@@ -180,7 +186,9 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             public void onResponse(FoodListResponse response) {
                 Log.d("Food categories Ok", response.toString());
                 if (response.isSuccess() && !response.getFoodList().isEmpty()) {
+                    subCourseList.clear();
                     subCourseList.addAll(response.getFoodList());
+                    canFreePossible(response.getFoodList());
                     mAdapter.notifyDataSetChanged();
                 } else {
                     setNoDataLogic(false);
@@ -196,6 +204,16 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             }
         });
         VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+    }
+
+    private void canFreePossible(List<FoodDetail> foodList) {
+        List<String> freeFoodList = new ArrayList<>();
+        for (FoodDetail foodDetail : foodList) {
+            if (foodDetail.isFreeFood() && !freeFoodList.contains(foodDetail.getMainCourseId())) {
+                freeFoodList.add(foodDetail.getMainCourseId());
+                foodDetail.setReallyFree("S");
+            }
+        }
     }
 
     private void setNoDataLogic(boolean isRetry) {

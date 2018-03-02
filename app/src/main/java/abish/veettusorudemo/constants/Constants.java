@@ -11,6 +11,7 @@ public class Constants {
     }
 
     public static final String SELECTED_FOOD_CATEGORY = "SELECTED_FOOD_CATEGORY";
+    public static final String SELECTED_FOOD_CATEGORY_ID = "SELECTED_FOOD_CATEGORY_ID";
     public static final String SELECTED_FOOD_CATEGORY_TIMING = "SELECTED_FOOD_CATEGORY_TIMING";
     public static final String SELECTED_MAIN_FOODS = "SELECTED_MAIN_FOODS";
     public static final String SELECTED_FOOD = "SELECTED_FOOD";

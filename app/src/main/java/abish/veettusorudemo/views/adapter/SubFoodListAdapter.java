@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -31,10 +35,11 @@ import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
+import abish.veettusorudemo.network.response.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
 import abish.veettusorudemo.views.UserLoginControlActivity;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.R.id.progress_bar;
@@ -75,37 +80,37 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.share_food)
+        @BindView(R.id.share_food)
         ImageView shareFood;
 
-        @Bind(R.id.iv_food)
+        @BindView(R.id.iv_food)
         ImageView ivFood;
 
-        @Bind(R.id.iv_minus)
+        @BindView(R.id.iv_minus)
         ImageView ivMinus;
 
-        @Bind(R.id.iv_plus)
+        @BindView(R.id.iv_plus)
         ImageView ivPlus;
 
-        @Bind(R.id.iv_favourite)
+        @BindView(R.id.iv_favourite)
         ImageView ivFavourite;
 
-        @Bind(R.id.tv_food_name)
+        @BindView(R.id.tv_food_name)
         TextView tvFoodName;
 
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
 
-        @Bind(R.id.tv_count)
+        @BindView(R.id.tv_count)
         TextView tvCount;
 
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
 
-        @Bind(R.id.cb_sub_food)
+        @BindView(R.id.cb_sub_food)
         CheckBox cbSubFood;
 
-        @Bind(progress_bar)
+        @BindView(progress_bar)
         ProgressBar progressBar;
 
         private MyViewHolder(View itemView) {
@@ -116,32 +121,49 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
 
         public void bind(final FoodDetail foodDetail, final int position) {
             tvFoodName.setText(foodDetail.getFoodName());
-            tvPrice.setText(foodDetail.getPrice());
+            OfferDetail offerDetail = !foodDetail.getOfferDetails().isEmpty() ? foodDetail.getOfferDetails().get(0) : null;
+            StringBuilder actualPrice = new StringBuilder();
+            if (offerDetail != null) {
+                String offerPrice = !offerDetail.getOfferPrice().isEmpty() ? offerDetail.getOfferPrice() : null;
+                String offerPercentage = !offerDetail.getOfferPricePercentage().isEmpty() ? offerDetail.getOfferPricePercentage() : null;
+                int offerValueOnPercentage = offerPercentage != null ? Integer.parseInt(offerPercentage.substring(0, offerPercentage.length() - 1)) / 100 : 0;
+                int price = offerPrice != null ? Integer.parseInt(offerPrice) :
+                        (Integer.parseInt(foodDetail.getPrice()) * offerValueOnPercentage);
+                String finalFoodPrice = String.valueOf(Integer.parseInt(foodDetail.getPrice()) - price);
+                actualPrice.append("Price: ").append(foodDetail.getPrice()).
+                        append(" ").append(finalFoodPrice);
+                int strikeTroughLength = actualPrice.length() - finalFoodPrice.length();
+                tvPrice.setText(actualPrice.toString(), TextView.BufferType.SPANNABLE);
+                Spannable spannable = (Spannable) tvPrice.getText();
+                spannable.setSpan(new StrikethroughSpan(), 7, strikeTroughLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                foodDetail.setPriceAfterOffer(finalFoodPrice);
+            } else if (foodDetail.isReallyFree()) {
+                tvPrice.setText(context.getString(R.string.text_free));
+            } else {
+                actualPrice.append("Price: ").append(foodDetail.getPrice());
+                tvPrice.setText(actualPrice.toString());
+                foodDetail.setPriceAfterOffer(foodDetail.getPrice());
+            }
             tvDescription.setText(foodDetail.getShortDescription());
             tvCount.setText(foodDetail.getSelectedFoodCount());
             cbSubFood.setChecked(foodDetail.isChecked());
             foodDetail.setPriceAfterOffer(foodDetail.getPrice());
 
             if (!foodDetail.getFoodImageUrl().isEmpty()) {
-                Picasso.with(context).load(foodDetail.getFoodImageUrl()).into(ivFood);
-//                Glide.with(context)
-//                        .load(foodDetail.getFoodImageUrl())
-//                        .listener(new RequestListener() {
-//                            @Override
-//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                ivFood.setImageResource(R.drawable.heart_outline);
-//                                return false;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                return false;
-//                            }
-//                        })
-//                        .thumbnail(R.drawable.heart_outline)
-//                        .into(ivFood);
+                Picasso.with(context).load(foodDetail.getFoodImageUrl()).into(ivFood,
+                        new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                progressBar.setVisibility(View.GONE);
+                                ivFood.setImageResource(R.color.light_grey);
+                            }
+                        });
             }
 
             cbSubFood.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -20,25 +20,26 @@ import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.network.model.OrderData;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.views.adapter.AllOrderCheckListAdapter;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AllOrderCheckActivity extends AppCompatActivity implements AllOrderCheckListAdapter.OnCountChangeListener {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.bt_order)
+    @BindView(R.id.bt_order)
     Button btOrder;
 
-    @Bind(R.id.delivery_recycler_view)
+    @BindView(R.id.delivery_recycler_view)
     RecyclerView deliveryRecyclerView;
 
     private ArrayList<FoodDetail> selectedFoodDetailList;
     private AllOrderCheckListAdapter mAdapter;
+    private String foodCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,10 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
         setTitle();
 
         Bundle bundle = getIntent().getExtras();
-        selectedFoodDetailList = bundle.getParcelableArrayList(Constants.ALL_SELECTED_FOOD_LIST);
+        if (bundle != null) {
+            selectedFoodDetailList = bundle.getParcelableArrayList(Constants.ALL_SELECTED_FOOD_LIST);
+            foodCategoryId = getIntent().getExtras().getString(Constants.SELECTED_FOOD_CATEGORY_ID);
+        }
 
         if (selectedFoodDetailList != null) {
             mAdapter = new AllOrderCheckListAdapter(this, this, selectedFoodDetailList);
@@ -63,7 +67,9 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
     private void totalPrice() {
         int totalPayable = 0;
         for (FoodDetail foodDetail : selectedFoodDetailList) {
-            totalPayable += foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber();
+            if (!foodDetail.isReallyFree()) {
+                totalPayable += foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber();
+            }
         }
         btOrder.setText(getString(R.string.text_order, " Rs. " + totalPayable));
     }
@@ -86,9 +92,10 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
     private void setTitle() {
         toolbarTitle.setText(R.string.title_total_order);
         setSupportActionBar(toolBar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     public void goToDeliveryConfirm(View view) {
@@ -109,6 +116,7 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
             if (!orderDatas.isEmpty()) {
                 intent = new Intent(AllOrderCheckActivity.this, DeliveryManagementActivity.class);
                 intent.putParcelableArrayListExtra(Constants.ALL_ORDERS, orderDatas);
+                intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
             } else {
                 Toast.makeText(this, "Nothing Selected", Toast.LENGTH_SHORT).show();
                 intent = new Intent(AllOrderCheckActivity.this, MainActivity.class);

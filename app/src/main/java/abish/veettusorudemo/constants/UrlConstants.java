@@ -49,6 +49,7 @@ public class UrlConstants {
 
     //TODO - Change the hardcoded values
     public static String ADDRESS_USER_ID = "?user_id=";
+    public static String ADDRESS_CATEGORY_ID = "&category_id=";
 
     public static String ADDRESS_UPDATE_USER_ID = "?user_id=";
     public static String ADDRESS_UPDATE_STREET = "&street=";

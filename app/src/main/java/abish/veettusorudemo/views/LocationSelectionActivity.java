@@ -26,7 +26,7 @@ import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.LocationResponse;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -35,13 +35,13 @@ import static abish.veettusorudemo.Utils.hideLoader;
 
 public class LocationSelectionActivity extends AppCompatActivity {
 
-    @Bind(R.id.spin_location)
+    @BindView(R.id.spin_location)
     Spinner spinLocation;
 
-    @Bind(R.id.bt_continue)
+    @BindView(R.id.bt_continue)
     Button btContinue;
 
-    @Bind(R.id.tv_contact_us)
+    @BindView(R.id.tv_contact_us)
     TextView tvContactUs;
 
     String selectedLocation;
@@ -107,7 +107,7 @@ public class LocationSelectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(LocationResponse response) {
                 Log.d("Locations Ok", response.toString());
-                onLocationRecieved(response);
+                onLocationReceived(response);
                 btContinue.setText(R.string.continue_text);
                 hideLoader();
             }
@@ -122,8 +122,7 @@ public class LocationSelectionActivity extends AppCompatActivity {
         VolleyApiClient.getInstance().addToRequestQueue(request, "Get Location");
     }
 
-    private void onLocationRecieved(LocationResponse response) {
-
+    private void onLocationReceived(LocationResponse response) {
         btContinue.setText(R.string.continue_text);
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getLoc(response));
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

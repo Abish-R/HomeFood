@@ -13,11 +13,12 @@ import java.util.List;
 
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.network.response.FoodDetail;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by Abish on 10/15/2017.
+ * </p>
  */
 
 public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
@@ -54,28 +55,28 @@ public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.iv_minus)
+//        @BindView(R.id.iv_minus)
 //        ImageView shareFood;
 //
-//        @Bind(R.id.iv_plus)
+//        @BindView(R.id.iv_plus)
 //        ImageView ivFood;
 
-        @Bind(R.id.iv_minus)
+        @BindView(R.id.iv_minus)
         ImageView ivMinus;
 
-        @Bind(R.id.iv_plus)
+        @BindView(R.id.iv_plus)
         ImageView ivPlus;
 
-        @Bind(R.id.tv_food_name)
+        @BindView(R.id.tv_food_name)
         TextView tvFoodName;
 
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
 
-        @Bind(R.id.tv_count)
+        @BindView(R.id.tv_count)
         TextView tvCount;
 
-        @Bind(R.id.tv_item_count)
+        @BindView(R.id.tv_item_count)
         TextView tvItemCount;
 
         private MyViewHolder(View itemView) {
@@ -86,8 +87,12 @@ public class AllOrderCheckListAdapter extends RecyclerView.Adapter {
 
         public void bind(final FoodDetail foodDetail, final int position) {
             tvFoodName.setText(foodDetail.getFoodName());
-            tvPrice.setText(context.getString(R.string.price_display, "" +
-                    foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber()));
+            if (!foodDetail.isReallyFree()) {
+                tvPrice.setText(context.getString(R.string.price_display, "" +
+                        foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber()));
+            } else {
+                tvPrice.setText(context.getString(R.string.text_free));
+            }
             tvItemCount.setText(position + 1 + ".");
             tvCount.setText(foodDetail.getSelectedFoodCount());
 

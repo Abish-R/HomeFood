@@ -1,20 +1,19 @@
 package abish.veettusorudemo.views;
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -48,7 +47,7 @@ import abish.veettusorudemo.network.request.OrderRequest;
 import abish.veettusorudemo.network.response.AddressDeleteResponse;
 import abish.veettusorudemo.network.response.AddressResponse;
 import abish.veettusorudemo.network.response.OrderResponse;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.R.id.tv_date_time;
@@ -59,49 +58,51 @@ import static abish.veettusorudemo.Utils.hideLoader;
 public class DeliveryManagementActivity extends AppCompatActivity implements
         com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener, com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
 
-    @Bind(R.id.bt_continue)
+    @BindView(R.id.bt_continue)
     Button btContinue;
 
-    @Bind(R.id.bt_cancel)
+    @BindView(R.id.bt_cancel)
     Button cancelAddress;
 
-    @Bind(R.id.bt_add_address)
+    @BindView(R.id.bt_add_address)
     Button addAddress;
 
-    @Bind(R.id.bt_retry)
+    @BindView(R.id.bt_retry)
     Button retry;
 
-    @Bind(tv_date_time)
+    @BindView(tv_date_time)
     TextView dateTime;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.door_street)
+    @BindView(R.id.door_street)
     EditText doorStreet;
 
-    @Bind(R.id.city)
+    @BindView(R.id.city)
     EditText city;
 
-    @Bind(R.id.pincode)
+    @BindView(R.id.pincode)
     EditText pinCode;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.rv_address_list)
+    @BindView(R.id.rv_address_list)
     RecyclerView rvAddressList;
 
-    @Bind(R.id.ll_address_entry)
+    @BindView(R.id.ll_address_entry)
     LinearLayout llAddressEntry;
 
     private Calendar calendar = Calendar.getInstance();
     private StringBuilder dateTimeText;
     private List<AddressData> addressList;
+    private List<String> deliveryTime;
     private AddressListAdapter mAdapter;
     private boolean isPermanentEdit;
     private ArrayList<OrderData> orderDatas = new ArrayList<>();
     private OrderRequest requestData;
+    private String foodCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,12 +112,14 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setTitle();
 
-        orderDatas = getIntent().getExtras().
-                getParcelableArrayList(Constants.ALL_ORDERS);
+        if (getIntent().getExtras() != null) {
+            orderDatas = getIntent().getExtras().getParcelableArrayList(Constants.ALL_ORDERS);
+        }
 
         requestData = new OrderRequest();
         if (orderDatas != null && !orderDatas.isEmpty()) {
             requestData.setOrderDetail(orderDatas);
+            foodCategoryId = getIntent().getExtras().getString(Constants.SELECTED_FOOD_CATEGORY_ID);
         }
 
         getUserAddress("");
@@ -141,9 +144,11 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     private void setTitle() {
         toolbarTitle.setText(R.string.title_delivery);
         setSupportActionBar(toolBar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     public void displayCalendarView(View view) {
@@ -151,7 +156,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePicker.show(getFragmentManager(), "Datepickerdialog");
         datePicker.setMinDate(setMinMaxDate(true));
-        datePicker.setMaxDate(setMinMaxDate(false));
+        //datePicker.setMaxDate(setMinMaxDate(false));
     }
 
     public void addAddress(View view) {
@@ -188,7 +193,46 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         dateTimeText.append(year).append("-").append(month).append("-").append(dayOfMonth);
         TimePickerDialog dpd = TimePickerDialog.newInstance(DeliveryManagementActivity.this,
                 calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), false);
-        dpd.show(getFragmentManager(), "TimePickerDialog");
+
+        //dpd.show(getFragmentManager(), "TimePickerDialog");
+
+        deliveryTimeSlots();
+    }
+
+    private void deliveryTimeSlots() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
+        builderSingle.setTitle("Select Delivery Slot");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.select_dialog_singlechoice);
+
+        if (deliveryTime == null) return;
+
+        for (int i = 0; i < deliveryTime.size(); i++) {
+            arrayAdapter.add(deliveryTime.get(i));
+        }
+
+        // cancel button
+        builderSingle.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dateTimeText = null;
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("Selected Item : ", arrayAdapter.getItem(which));
+                        String time = arrayAdapter.getItem(which) != null ? arrayAdapter.getItem(which).replace(" ", "") : "";
+                        dateTimeText.append(" ").append(time);
+                        dateTime.setText(dateTimeText);
+                        dialog.dismiss();
+
+                    }
+                });
+        builderSingle.show();
     }
 
     @Override
@@ -248,26 +292,11 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         alertDialog.show();
     }
 
-    private void sendNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(DeliveryManagementActivity.this);
-        builder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.heart_filled)
-                .setTicker("Food Order placed")
-                .setContentTitle("Food Order placed")
-                .setContentText("Your placed order will be delivered to your address on time. Have a great day.")
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setContentInfo("Order Ok");
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());
-        finish();
-    }
-
     private void getUserAddress(String userId) {
         String url = UrlConstants.GET_ADDRESS_URL
-                + UrlConstants.ADDRESS_USER_ID + getSavedUserDetail(this, Constants.LOGIN_USER_ID);
+                + UrlConstants.ADDRESS_USER_ID + getSavedUserDetail(this, Constants.LOGIN_USER_ID)
+                + UrlConstants.ADDRESS_CATEGORY_ID + foodCategoryId;
+
         displayLoader(this, "Receiving Address...");
 
         GsonRequest request = new GsonRequest<AddressResponse>(url, null,
@@ -276,8 +305,8 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             public void onResponse(AddressResponse response) {
                 if (response.isSuccess()) {
                     addressList = response.getAddressList();
+                    deliveryTime = response.getDeliveryTime();
                     setOrWriteAddress();
-                    addAddress.setText(R.string.text_add_address);
                 }
                 hideLoader();
             }
@@ -298,6 +327,11 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             rvAddressList.setLayoutManager(new LinearLayoutManager(DeliveryManagementActivity.this));
             rvAddressList.setAdapter(mAdapter);
 
+            if (addressList.size() >= 3) {
+                addAddress.setVisibility(View.INVISIBLE);
+            } else {
+                addAddress.setText(R.string.text_add_address);
+            }
             enableAddressListMode();
         } else {
             enableAddressEntryMode();
@@ -325,7 +359,8 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
     public void orderFood(View view) {
         if (!dateTime.getText().toString().equals(getString(R.string.text_pick_delivery_time))) {
-            requestData.setDeliveryTime(dateTime.getText().toString());
+            String deliveryTime = dateTime.getText().toString();
+            requestData.setDeliveryTime(deliveryTime.substring(0, deliveryTime.length() - 2));
 
             if (rvAddressList.getVisibility() == View.VISIBLE && addressList != null && !addressList.isEmpty()) {
                 boolean isCheckedAddress = false;
@@ -500,16 +535,16 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            @Bind(R.id.ib_edit_address)
+            @BindView(R.id.ib_edit_address)
             ImageButton ibEditAddress;
 
-            @Bind(R.id.ib_delete_address)
+            @BindView(R.id.ib_delete_address)
             ImageButton ibDeleteAddress;
 
-            @Bind(R.id.tv_address)
+            @BindView(R.id.tv_address)
             TextView tvAddress;
 
-            @Bind(R.id.cb_address)
+            @BindView(R.id.cb_address)
             CheckBox cbAddress;
 
             private MyViewHolder(View itemView) {

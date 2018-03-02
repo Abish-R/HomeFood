@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import abish.veettusorudemo.ActivityFoodDetailUpdater;
@@ -29,56 +30,56 @@ import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.Utils.hideLoader;
 
 public class FoodDescriptionActivity extends AppCompatActivity {
 
-    @Bind(R.id.share_food)
+    @BindView(R.id.share_food)
     ImageView shareFood;
 
-    @Bind(R.id.iv_food)
+    @BindView(R.id.iv_food)
     ImageView ivFood;
 
-    @Bind(R.id.iv_minus)
+    @BindView(R.id.iv_minus)
     ImageView ivMinus;
 
-    @Bind(R.id.iv_plus)
+    @BindView(R.id.iv_plus)
     ImageView ivPlus;
 
-    @Bind(R.id.iv_favourite)
+    @BindView(R.id.iv_favourite)
     ImageView ivFavourite;
 
-    @Bind(R.id.tv_food_name)
+    @BindView(R.id.tv_food_name)
     TextView tvFoodName;
 
-    @Bind(R.id.tv_price)
+    @BindView(R.id.tv_price)
     TextView tvPrice;
 
-    @Bind(R.id.tv_count)
+    @BindView(R.id.tv_count)
     TextView tvCount;
 
-    @Bind(R.id.tv_description)
+    @BindView(R.id.tv_description)
     TextView tvDescription;
 
-//    @Bind(R.id.bt_add)
+//    @BindView(R.id.bt_add)
 //    Button btAdd;
 
-    @Bind(R.id.bt_back)
+    @BindView(R.id.bt_back)
     Button btBack;
 
-    @Bind(R.id.controls)
+    @BindView(R.id.controls)
     RelativeLayout controls;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolBar;
 
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView toolbarTitle;
 
-    @Bind(R.id.progressbar)
+    @BindView(R.id.progressbar)
     ProgressBar progressBar;
 
     private FoodDetail foodDetailData;
@@ -91,7 +92,9 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle();
 
-        foodDetailData = getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD);
+        if(getIntent().getExtras() != null) {
+            foodDetailData = getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD);
+        }
 
         if (foodDetailData != null) {
             tvFoodName.setText(foodDetailData.getFoodName());
@@ -106,26 +109,19 @@ public class FoodDescriptionActivity extends AppCompatActivity {
             }
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
-                progressBar.setVisibility(View.GONE);
-                Picasso.with(this).load(foodDetailData.getFoodImageUrl()).into(ivFood);
-//                Glide.with(this)
-//                        .load(foodDetailData.getFoodImageUrl())
-//                        .listener(new RequestListener() {
-//                            @Override
-//                            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                return false;
-//                            }
-//
-//                            @Override
-//                            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                progressBar.setVisibility(View.GONE);
-//                                ivFood.setImageResource(R.drawable.heart_outline);
-//                                return false;
-//                            }
-//                        })
-//                        .thumbnail(R.drawable.heart_outline)
-//                        .into(ivFood);
+                Picasso.with(this).load(foodDetailData.getFoodImageUrl()).into(ivFood,
+                        new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                progressBar.setVisibility(View.GONE);
+                                ivFood.setImageResource(R.color.light_grey);
+                            }
+                        });
             }
         }
 
@@ -221,8 +217,10 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         toolbarTitle.setText(R.string.title_food_main_page);
         setSupportActionBar(toolBar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     private void setFoodCount(int count) {

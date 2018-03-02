@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by Abish on 9/4/2017.
+ * </p>
  */
 
 public class FoodDetail implements Parcelable {
@@ -55,14 +56,21 @@ public class FoodDetail implements Parcelable {
     @SerializedName("favourite_course")
     private String favouriteCourse;
 
+    @SerializedName("free")
+    private String freeFood;
+
+    @SerializedName("main_course_id")
+    private String mainCourseId;
+
     @SerializedName("offer_details")
     private List<OfferDetail> offerDetails;
 
     private transient int selectedFoodCount = 0;
     private transient boolean isChecked;
     private transient int priceAfterOffer;
+    private transient String isReallyFree;
 
-    public FoodDetail(){
+    public FoodDetail() {
     }
 
     protected FoodDetail(Parcel in) {
@@ -80,8 +88,11 @@ public class FoodDetail implements Parcelable {
         availableOnlyToday = in.readString();
         addedDate = in.readString();
         favouriteCourse = in.readString();
+        freeFood = in.readString();
+        mainCourseId = in.readString();
         selectedFoodCount = in.readInt();
         priceAfterOffer = in.readInt();
+        isReallyFree = in.readString();
     }
 
     @Override
@@ -100,8 +111,11 @@ public class FoodDetail implements Parcelable {
         parcel.writeString(availableOnlyToday);
         parcel.writeString(addedDate);
         parcel.writeString(favouriteCourse);
+        parcel.writeString(freeFood);
+        parcel.writeString(mainCourseId);
         parcel.writeInt(selectedFoodCount);
         parcel.writeInt(priceAfterOffer);
+        parcel.writeString(isReallyFree);
     }
 
     public static final Creator<FoodDetail> CREATOR = new Creator<FoodDetail>() {
@@ -239,6 +253,34 @@ public class FoodDetail implements Parcelable {
 
     public void setSelectedFoodCount(int selectedFoodCount) {
         this.selectedFoodCount = selectedFoodCount;
+    }
+
+    public String getFreeFood() {
+        return freeFood;
+    }
+
+    public void setFreeFood(String freeFood) {
+        this.freeFood = freeFood;
+    }
+
+    public boolean isFreeFood() {
+        return freeFood != null && Integer.valueOf(freeFood) == 1;
+    }
+
+    public void setReallyFree(String isReallyFree) {
+        this.isReallyFree = isReallyFree;
+    }
+
+    public boolean isReallyFree() {
+        return isReallyFree != null && isReallyFree.equals("S");
+    }
+
+    public String getMainCourseId() {
+        return mainCourseId;
+    }
+
+    public void setMainCourseId(String mainCourseId) {
+        this.mainCourseId = mainCourseId;
     }
 
     public List<OfferDetail> getOfferDetails() {
