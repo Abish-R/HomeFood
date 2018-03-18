@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Abish on 11/26/2017.
+ * </p>
  */
 
 public class OrderData implements Parcelable {

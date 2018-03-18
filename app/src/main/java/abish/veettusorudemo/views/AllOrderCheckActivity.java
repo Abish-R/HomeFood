@@ -100,7 +100,7 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
 
     public void goToDeliveryConfirm(View view) {
         Intent intent;
-        if (Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID) != "null") {
+        if (!Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID).equals("null")) {
             ArrayList<OrderData> orderDatas = new ArrayList<>();
             for (FoodDetail selectedFoodData : selectedFoodDetailList) {
                 if (selectedFoodData.getSelectedFoodCountNumber() > 0) {

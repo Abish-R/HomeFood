@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
 
         foodCategoryID = foodCategoryData.getId();
         getMainDishList();
-
+startActivity(new Intent(this, MyOrdersActivity.class));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

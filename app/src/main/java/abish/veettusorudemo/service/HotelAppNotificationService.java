@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 import abish.veettusorudemo.NotificationUtils;
-import abish.veettusorudemo.views.SplashActivity;
+import abish.veettusorudemo.views.MyOrdersActivity;
 
 /**
  * Created by Abish on 11/25/2017.
@@ -81,7 +81,7 @@ public class HotelAppNotificationService extends FirebaseMessagingService {
             Log.e(TAG, "message: " + message);
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
-            Intent resultIntent = new Intent(getApplicationContext(), SplashActivity.class);
+            Intent resultIntent = new Intent(getApplicationContext(), MyOrdersActivity.class);
             resultIntent.putExtra("message", message);
 
             // check for image attachment

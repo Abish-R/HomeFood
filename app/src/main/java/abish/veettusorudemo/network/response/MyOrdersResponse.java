@@ -3,58 +3,54 @@ package abish.veettusorudemo.network.response;
 import com.google.gson.annotations.SerializedName;
 
 import abish.veettusorudemo.model.ResponseSuccessFinder;
-import abish.veettusorudemo.network.model.OrderData;
+import abish.veettusorudemo.network.model.MyOrdersData;
 
 /**
- * Created by Abish on 8/17/2017.
+ * Created by Abish on 3/19/2018.
  * </p>
  */
 
-public class OrderResponse implements ResponseSuccessFinder {
+public class MyOrdersResponse implements ResponseSuccessFinder {
 
-    @SerializedName ("status")
+    @SerializedName("status")
     private String status;
 
     @SerializedName ("response")
     private int response;
 
-    @SerializedName ("orderData")
-    private OrderData order;
+    @SerializedName ("orders")
+    private MyOrdersData myOrdersData;
 
-    public OrderResponse(){
+    public MyOrdersResponse(){
 
     }
 
-    //@Override
     public String getStatus() {
         return status;
     }
 
-   // @Override
     public void setStatus(String status) {
         this.status = status;
     }
 
-    //@Override
     public int getResponse() {
         return response;
     }
 
-    //@Override
     public void setResponse(int response) {
         this.response = response;
     }
 
-    public OrderData  getorder() {
-        return order;
+    public MyOrdersData getMyOrdersData() {
+        return myOrdersData;
     }
 
-    public void setorder(OrderData response) {
-        this.order = order;
+    public void setMyOrdersData(MyOrdersData myOrdersData) {
+        this.myOrdersData = myOrdersData;
     }
 
     @Override
     public boolean isSuccess() {
-        return true;
+        return false;
     }
 }

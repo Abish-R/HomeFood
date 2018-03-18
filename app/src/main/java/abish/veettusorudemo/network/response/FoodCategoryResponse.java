@@ -8,6 +8,7 @@ import abish.veettusorudemo.network.model.FoodCategory;
 
 /**
  * Created by Abish on 8/17/2017.
+ * </p>
  */
 
 public class FoodCategoryResponse {

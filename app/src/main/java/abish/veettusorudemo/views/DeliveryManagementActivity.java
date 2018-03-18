@@ -103,6 +103,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
     private ArrayList<OrderData> orderDatas = new ArrayList<>();
     private OrderRequest requestData;
     private String foodCategoryId;
+    private String editAddressId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,12 +327,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
             mAdapter = new AddressListAdapter(DeliveryManagementActivity.this, addressList);
             rvAddressList.setLayoutManager(new LinearLayoutManager(DeliveryManagementActivity.this));
             rvAddressList.setAdapter(mAdapter);
-
-            if (addressList.size() >= 3) {
-                addAddress.setVisibility(View.INVISIBLE);
-            } else {
-                addAddress.setText(R.string.text_add_address);
-            }
+            addAddress.setText(R.string.text_add_address);
             enableAddressListMode();
         } else {
             enableAddressEntryMode();
@@ -414,6 +410,9 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                 + UrlConstants.ADDRESS_UPDATE_COUNTRY + Constants.CURRENT_COUNTRY
                 + UrlConstants.ADDRESS_UPDATE_PIN_CODE + pinCode.getText().toString()
                 + UrlConstants.ADDRESS_UPDATE_FLAG + (isPermanentEdit ? Constants.ADDRESS_PERMANENT_FLAG : Constants.ADDRESS_TEMPORARY_FLAG);
+        if (editAddressId != null && !editAddressId.isEmpty() && !editAddressId.equals("null")) {
+            url += UrlConstants.ADDRESS_UPDATE_ID + editAddressId;
+        }
         displayLoader(this, "Updating Address...");
 
         url = url.replaceAll(" ", "%20");
@@ -428,6 +427,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
                     Utils.alertOkMessage(DeliveryManagementActivity.this, "Maximum Address Reached, select one of them and change", "Ok");
                     getUserAddress("");
                 }
+                editAddressId = null;
                 hideLoader();
             }
         }, new Response.ErrorListener() {
@@ -465,6 +465,7 @@ public class DeliveryManagementActivity extends AppCompatActivity implements
         pinCode.setText(addressDetail.getPincode());
         addAddress.setText(R.string.text_add_or_update_address);
         cancelAddress.setVisibility(View.VISIBLE);
+        editAddressId = addressDetail.getAddressId();
     }
 
     // From Adapter edit Address
