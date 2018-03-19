@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_padding"
+    tools:context="abish.veettusorudemo.views.MyOrderDescriptionActivity">
+
+    <LinearLayout
+        android:id="@+id/order_status_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_order_status_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/small_padding"
+        android:paddingBottom="@dimen/small_padding"
+        android:layout_weight="4"
+        android:text="Order Status"/>
+
+    <TextView
+        android:id="@+id/tv_order_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small_padding"
+        android:layout_weight="6"
+        android:gravity="center"
+        tools:text="Order Delivered"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/order_date_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingTop="@dimen/small_padding"
+        android:layout_below="@+id/order_status_container">
+
+        <TextView
+            android:id="@+id/tv_order_date_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/text_order_date" />
+
+        <TextView
+            android:id="@+id/tv_order_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            tools:text="14-11-018" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/delivery_date_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingTop="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/default_padding"
+        android:layout_below="@+id/order_date_container">
+
+        <TextView
+            android:id="@+id/tv_delivery_date_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/text_delivery_time" />
+
+        <TextView
+            android:id="@+id/tv_delivery_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            tools:text="14-11-018 1 : 00" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/delivery_date_container"
+        android:id="@+id/item_title_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/very_light_grey"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingTop="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/small_padding">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="5.8"
+            android:gravity="center"
+            android:text="Food" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4"
+            android:gravity="center"
+            android:text="Price" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Qty" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:gravity="center"
+            android:text="Total" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_my_order_food_list"
+        android:layout_below="@+id/item_title_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_below="@+id/rv_my_order_food_list"
+        android:id="@+id/price_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:layout_marginBottom="@dimen/default_padding">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="7.2"
+            android:gravity="end"
+            android:text="Total Amount" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="1"
+            android:gravity="center"
+            tools:text="99" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:gravity="center"
+            tools:text="99999" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/price_container"
+        android:id="@+id/offer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="7.2"
+            android:gravity="end"
+            android:text="Total Offer" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="1"
+            android:gravity="center"
+            tools:text="9000" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:gravity="center"
+            tools:text="99999" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/offer_container"
+        android:id="@+id/final_price_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_padding"
+        android:layout_marginBottom="@dimen/default_padding">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="7.2"
+            android:gravity="end"
+            android:text="Final Offer" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:gravity="center"
+            tools:text="99999" />
+    </LinearLayout>
+
+</RelativeLayout>

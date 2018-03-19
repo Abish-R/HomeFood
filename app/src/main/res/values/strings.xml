@@ -20,6 +20,7 @@
     <string name="title_sub_food_category">Sub Course Food</string>
     <string name="title_delivery">Delivery</string>
     <string name="title_total_order">Total Orders</string>
+    <string name="title_my_orders">My Orders</string>
 
     <string name="text_name">Name</string>
     <string name="text_username">Username</string>
@@ -67,4 +68,8 @@
     <string name="text_no_sub_food">No related food available for now.\nTry Another</string>
     <string name="text_go_back">Go Back</string>
     <string name="text_free">Free</string>
+    <string name="text_order_date">Order Date</string>
+    <string name="text_delivery_time">Delivery Time</string>
+    <string name="text_total_amount">Total Amount</string>
+    <string name="text_order_status">Order Status</string>
 </resources>

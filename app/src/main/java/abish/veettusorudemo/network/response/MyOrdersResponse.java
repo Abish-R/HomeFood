@@ -16,7 +16,7 @@ public class MyOrdersResponse implements ResponseSuccessFinder {
     private String status;
 
     @SerializedName ("response")
-    private int response;
+    private String response;
 
     @SerializedName ("orders")
     private MyOrdersData myOrdersData;
@@ -33,11 +33,11 @@ public class MyOrdersResponse implements ResponseSuccessFinder {
         this.status = status;
     }
 
-    public int getResponse() {
+    public String getResponse() {
         return response;
     }
 
-    public void setResponse(int response) {
+    public void setResponse(String response) {
         this.response = response;
     }
 
@@ -51,6 +51,6 @@ public class MyOrdersResponse implements ResponseSuccessFinder {
 
     @Override
     public boolean isSuccess() {
-        return false;
+        return "1".equals(getResponse());
     }
 }

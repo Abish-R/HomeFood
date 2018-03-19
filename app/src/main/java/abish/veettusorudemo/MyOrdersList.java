@@ -86,8 +86,8 @@ public class MyOrdersList {
         this.orderStatus = orderStatus;
     }
 
-    public int getTotalAmount() {
-        return totalAmount;
+    public String getTotalAmount() {
+        return totalAmount + "";
     }
 
     public void setTotalAmount(int totalAmount) {
