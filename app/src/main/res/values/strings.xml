@@ -21,6 +21,7 @@
     <string name="title_delivery">Delivery</string>
     <string name="title_total_order">Total Orders</string>
     <string name="title_my_orders">My Orders</string>
+    <string name="title_my_order">My Order</string>
 
     <string name="text_name">Name</string>
     <string name="text_username">Username</string>
@@ -72,4 +73,10 @@
     <string name="text_delivery_time">Delivery Time</string>
     <string name="text_total_amount">Total Amount</string>
     <string name="text_order_status">Order Status</string>
+    <string name="text_food">Food</string>
+    <string name="text_price">Price</string>
+    <string name="text_qty">Qty</string>
+    <string name="text_total">Total</string>
+    <string name="text_total_offer">Total Offer</string>
+    <string name="text_final_price">Final Price</string>
 </resources>

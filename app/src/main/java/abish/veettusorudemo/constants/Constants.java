@@ -17,6 +17,7 @@ public class Constants {
     public static final String SELECTED_FOOD = "SELECTED_FOOD";
     public static final String ALL_SELECTED_FOOD_LIST = "ALL_SELECTED_FOOD_LIST";
     public static final String ALL_ORDERS = "ALL_ORDERS";
+    public static final String MY_ORDER_DATA = "MY_ORDER_DATA";
 
     // Login
     public static final int LOGIN_AFTER_LOCATION = 1;

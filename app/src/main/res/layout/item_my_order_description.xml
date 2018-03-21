@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/small_padding"
+    android:paddingTop="@dimen/small_padding">
+
+    <TextView
+        android:id="@+id/tv_food_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_padding"
+        android:layout_marginRight="@dimen/default_padding"
+        android:layout_weight="5.8"
+        tools:text="@string/text_food" />
+
+    <TextView
+        android:id="@+id/tv_food_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.4"
+        android:gravity="center"
+        tools:text="@string/text_price" />
+
+    <TextView
+        android:id="@+id/tv_food_qty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_padding"
+        android:layout_marginRight="@dimen/default_padding"
+        android:layout_weight="1"
+        android:gravity="center"
+        tools:text="@string/text_qty" />
+
+    <TextView
+        android:id="@+id/tv_food_total_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.8"
+        android:gravity="center"
+        tools:text="@string/text_total" />
+
+</LinearLayout>

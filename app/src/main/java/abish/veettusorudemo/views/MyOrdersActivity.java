@@ -43,6 +43,8 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
 
     private MyOrdersListAdapter mAdapter;
     private List<MyOrdersList> myOrdersList = new ArrayList<>();
+    private String nameUser;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
 
     @Override
     public void onBackPressed() {
-        finish();
+        super.onBackPressed();
         overridePendingTransitionExit();
     }
 
@@ -93,6 +95,10 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
                     myOrdersList.clear();
                     myOrdersList.addAll(response.getMyOrdersData().getOrderList());
                     mAdapter.notifyDataSetChanged();
+                    if (response.getMyOrdersData().getCustomerDetails() != null) {
+                        nameUser = response.getMyOrdersData().getCustomerDetails().getNameUser();
+                        phone = response.getMyOrdersData().getCustomerDetails().getPhone();
+                    }
                 }
                 hideLoader();
             }
@@ -108,7 +114,18 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
 
     @Override
     public void onMyOrdersItemClicked(MyOrdersList myOrderItem, int position) {
-        startActivity(new Intent(this, MyOrderDescriptionActivity.class));
+        int totalQty = 0;
+        for (MyOrdersList myOrder : myOrdersList) {
+            for (int i = 0; i < myOrder.getOrderDetail().size(); i++) {
+                totalQty += Integer.parseInt(myOrder.getOrderDetail().get(i).getFoodQuantity());
+            }
+        }
+        myOrderItem.setTotalQty(totalQty + "");
+        myOrderItem.setNameUser(nameUser);
+        myOrderItem.setPhone(phone);
+        Intent intent = new Intent(this, MyOrderDescriptionActivity.class);
+        intent.putExtra(Constants.MY_ORDER_DATA, myOrderItem);
+        startActivity(intent);
     }
 
     /**

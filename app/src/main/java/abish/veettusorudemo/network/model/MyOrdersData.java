@@ -17,9 +17,9 @@ public class MyOrdersData {
     private ArrayList<MyOrdersList> orderList;
 
     @SerializedName("customer_details")
-    private Object customerDetails;
+    private MyOrderCustomerDetail customerDetails;
 
-    public MyOrdersData(){
+    public MyOrdersData() {
 
     }
 
@@ -31,11 +31,11 @@ public class MyOrdersData {
         this.orderList = orderList;
     }
 
-    public Object getCustomerDetails() {
+    public MyOrderCustomerDetail getCustomerDetails() {
         return customerDetails;
     }
 
-    public void setCustomerDetails(Object customerDetails) {
+    public void setCustomerDetails(MyOrderCustomerDetail customerDetails) {
         this.customerDetails = customerDetails;
     }
 }

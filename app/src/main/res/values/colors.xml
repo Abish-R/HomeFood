@@ -18,7 +18,7 @@
     <color name="black_overlay">#66000000</color>
     <color name="white_different">#66ecfaf0</color>
     <color name="light_grey">#9f9f9f</color>
-    <color name="very_light_grey">#efefef</color>
+    <color name="very_light_grey">#ccd4cf</color>
 
     <color name="light_yellow">#1cfcdf03</color>
     <color name="light_green">#1c1d791a</color>

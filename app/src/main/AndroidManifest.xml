@@ -71,7 +71,9 @@
             android:name=".views.MyOrdersActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".views.MyOrderDescriptionActivity"></activity>
+        <activity
+            android:name=".views.MyOrderDescriptionActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

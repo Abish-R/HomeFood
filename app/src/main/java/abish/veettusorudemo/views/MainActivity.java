@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY) != null) {
             foodCategoryData = getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY);
             if (foodCategoryData != null) {
+                foodCategoryID = foodCategoryData.getId();
                 foodCategory = foodCategoryData.getCategoryName();
                 foodCategoryTiming = foodCategoryData.getOrderTiming();
                 deliveryTiming.setText("For party, make your order by " + foodCategoryTiming + " of same day");
@@ -94,9 +95,7 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new FoodListAdapter(this, foodDetailList, this);
         foodListRecycler.setAdapter(mAdapter);
 
-        foodCategoryID = foodCategoryData.getId();
         getMainDishList();
-startActivity(new Intent(this, MyOrdersActivity.class));
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,9 +251,9 @@ startActivity(new Intent(this, MyOrdersActivity.class));
         int id = item.getItemId();
 
         if (id == R.id.nav_list_foods) {
-            // Handle the camera action
+            startActivity(new Intent(this, FoodCategorySelectionActivity.class));
         } else if (id == R.id.nav_orders) {
-
+            startActivity(new Intent(this, MyOrdersActivity.class));
         } else if (id == R.id.nav_favourites) {
 
         } else if (id == R.id.nav_settings) {

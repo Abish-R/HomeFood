@@ -81,7 +81,7 @@ public class MyOrdersListAdapter extends RecyclerView.Adapter {
 
         public void bind(final MyOrdersList myOrdersItem, final int position) {
             String orderTitle;
-            if(myOrdersItem.getOrderDetail().get(position) != null && myOrdersItem.getOrderDetail().size() > 1) {
+            if(myOrdersItem.getOrderDetail() != null && myOrdersItem.getOrderDetail().size() > 1) {
                 orderTitle = myOrdersItem.getOrderDetail().get(0).getShortName()
                 + " +" + myOrdersItem.getOrderDetail().size() + "more";
             } else {
@@ -92,8 +92,9 @@ public class MyOrdersListAdapter extends RecyclerView.Adapter {
             tvOrderDate.setText(myOrdersItem.getOrderDateTime());
             tvDeliveryDate.setText(myOrdersItem.getDeliveryDateTime());
             tvTotalAmount.setText(myOrdersItem.getTotalAmount());
+            tvOrderStatus.setText(myOrdersItem.getOrderStatus());
 
-            // TODO : fix status code vaditaion and color change
+            // TODO : fix status code validation and color change
             tvOrderStatus.setBackgroundColor(context.getResources().getColor(R.color.light_green));
 
             parentContainer.setOnClickListener(new View.OnClickListener() {

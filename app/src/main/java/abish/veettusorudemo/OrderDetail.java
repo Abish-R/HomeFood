@@ -1,5 +1,8 @@
 package abish.veettusorudemo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * </p>
  */
 
-public class OrderDetail {
+public class OrderDetail implements Parcelable {
 
     @SerializedName("course_id")
     private String courseId;
@@ -32,6 +35,29 @@ public class OrderDetail {
 
     @SerializedName("price")
     private String price;
+
+    protected OrderDetail(Parcel in) {
+        courseId = in.readString();
+        foodQuantity = in.readString();
+        offer = in.readString();
+        type = in.readString();
+        shortName = in.readString();
+        foodName = in.readString();
+        amount = in.readString();
+        price = in.readString();
+    }
+
+    public static final Creator<OrderDetail> CREATOR = new Creator<OrderDetail>() {
+        @Override
+        public OrderDetail createFromParcel(Parcel in) {
+            return new OrderDetail(in);
+        }
+
+        @Override
+        public OrderDetail[] newArray(int size) {
+            return new OrderDetail[size];
+        }
+    };
 
     public String getCourseId() {
         return courseId;
@@ -103,5 +129,22 @@ public class OrderDetail {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(courseId);
+        parcel.writeString(foodQuantity);
+        parcel.writeString(offer);
+        parcel.writeString(type);
+        parcel.writeString(shortName);
+        parcel.writeString(foodName);
+        parcel.writeString(amount);
+        parcel.writeString(price);
     }
 }

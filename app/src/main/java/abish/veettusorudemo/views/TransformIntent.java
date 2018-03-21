@@ -6,6 +6,7 @@ import abish.veettusorudemo.network.response.FoodDetail;
 
 /**
  * Created by Abish on 10/8/2017.
+ * </p>
  */
 
 public interface TransformIntent {

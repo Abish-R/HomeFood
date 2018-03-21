@@ -1,230 +1,317 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/default_padding"
     tools:context="abish.veettusorudemo.views.MyOrderDescriptionActivity">
 
-    <LinearLayout
-        android:id="@+id/order_status_container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_order_status_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/small_padding"
-        android:paddingBottom="@dimen/small_padding"
-        android:layout_weight="4"
-        android:text="Order Status"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppToolbar">
 
-    <TextView
-        android:id="@+id/tv_order_status"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/small_padding"
-        android:layout_weight="6"
-        android:gravity="center"
-        tools:text="Order Delivered"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/order_date_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:layout_below="@+id/order_status_container">
+            <include layout="@layout/action_bar" />
+        </android.support.v7.widget.Toolbar>
 
         <TextView
-            android:id="@+id/tv_order_date_label"
-            android:layout_width="0dp"
+            android:id="@+id/tv_name_user"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:text="@string/text_order_date" />
+            android:layout_below="@+id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:background="@color/mdtp_white"
+            android:padding="@dimen/very_small_padding"
+            tools:text="Name of the user" />
 
         <TextView
-            android:id="@+id/tv_order_date"
-            android:layout_width="0dp"
+            android:id="@+id/tv_phone"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
-            tools:text="14-11-018" />
+            android:layout_below="@+id/tv_name_user"
+            android:layout_centerHorizontal="true"
+            android:background="@color/mdtp_white"
+            android:padding="@dimen/very_small_padding"
+            tools:text="987654310" />
 
-    </LinearLayout>
+        <View
+            android:id="@+id/horizontal_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/tv_phone"
+            android:layout_marginTop="@dimen/very_small_padding"
+            android:background="@color/very_light_grey" />
 
-    <LinearLayout
-        android:id="@+id/delivery_date_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:layout_marginBottom="@dimen/default_padding"
-        android:layout_below="@+id/order_date_container">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/horizontal_view"
+            android:padding="@dimen/default_padding">
 
-        <TextView
-            android:id="@+id/tv_delivery_date_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:text="@string/text_delivery_time" />
+            <LinearLayout
+                android:id="@+id/order_status_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_delivery_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            tools:text="14-11-018 1 : 00" />
+                <TextView
+                    android:id="@+id/tv_order_status_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:paddingBottom="@dimen/small_padding"
+                    android:paddingTop="@dimen/small_padding"
+                    android:text="@string/text_order_status" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_order_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:gravity="center"
+                    android:padding="@dimen/small_padding"
+                    tools:text="Order Delivered" />
 
-    <LinearLayout
-        android:layout_below="@+id/delivery_date_container"
-        android:id="@+id/item_title_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/very_light_grey"
-        android:paddingBottom="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:layout_marginBottom="@dimen/small_padding">
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="5.8"
-            android:gravity="center"
-            android:text="Food" />
+            <LinearLayout
+                android:id="@+id/order_date_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/order_status_container"
+                android:paddingBottom="@dimen/small_padding"
+                android:paddingTop="@dimen/small_padding">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.4"
-            android:gravity="center"
-            android:text="Price" />
+                <TextView
+                    android:id="@+id/tv_order_date_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:text="@string/text_order_date" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Qty" />
+                <TextView
+                    android:id="@+id/tv_order_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    tools:text="14-11-018" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            android:text="Total" />
-    </LinearLayout>
+            </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_my_order_food_list"
-        android:layout_below="@+id/item_title_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:id="@+id/delivery_date_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/order_date_container"
+                android:layout_marginBottom="@dimen/default_padding"
+                android:paddingBottom="@dimen/small_padding"
+                android:paddingTop="@dimen/small_padding">
 
-    <LinearLayout
-        android:layout_below="@+id/rv_my_order_food_list"
-        android:id="@+id/price_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding"
-        android:layout_marginBottom="@dimen/default_padding">
+                <TextView
+                    android:id="@+id/tv_delivery_date_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:text="@string/text_delivery_time" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="7.2"
-            android:gravity="end"
-            android:text="Total Amount" />
+                <TextView
+                    android:id="@+id/tv_delivery_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    tools:text="14-11-018 1 : 00" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="1"
-            android:gravity="center"
-            tools:text="99" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            tools:text="99999" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/item_title_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delivery_date_container"
+                android:background="@color/very_light_grey"
+                android:paddingBottom="@dimen/small_padding"
+                android:paddingEnd="@dimen/very_small_padding"
+                android:paddingLeft="@dimen/very_small_padding"
+                android:paddingRight="@dimen/very_small_padding"
+                android:paddingStart="@dimen/very_small_padding"
+                android:paddingTop="@dimen/small_padding">
 
-    <LinearLayout
-        android:layout_below="@+id/price_container"
-        android:id="@+id/offer_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="5.8"
+                    android:gravity="center"
+                    android:text="@string/text_food" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="7.2"
-            android:gravity="end"
-            android:text="Total Offer" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.4"
+                    android:gravity="center"
+                    android:text="@string/text_price" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="1"
-            android:gravity="center"
-            tools:text="9000" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/text_qty" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            tools:text="99999" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.8"
+                    android:gravity="center"
+                    android:text="@string/text_total" />
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_below="@+id/offer_container"
-        android:id="@+id/final_price_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding"
-        android:layout_marginBottom="@dimen/default_padding">
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/rv_my_order_food_list"
+                android:layout_below="@+id/item_title_container"
+                android:background="@color/very_light_grey" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="7.2"
-            android:gravity="end"
-            android:text="Final Offer" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/rv_my_order_food_list"
+                android:layout_alignEnd="@+id/rv_my_order_food_list"
+                android:layout_alignRight="@+id/rv_my_order_food_list"
+                android:layout_below="@+id/item_title_container"
+                android:background="@color/very_light_grey" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_padding"
-            android:layout_marginRight="@dimen/default_padding"
-            android:layout_weight="1" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/rv_my_order_food_list"
+                android:background="@color/very_light_grey" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            tools:text="99999" />
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_my_order_food_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_title_container"
+                android:paddingEnd="@dimen/very_small_padding"
+                android:paddingLeft="@dimen/very_small_padding"
+                android:paddingRight="@dimen/very_small_padding"
+                android:paddingStart="@dimen/very_small_padding"
+                android:paddingTop="@dimen/small_padding" />
 
-</RelativeLayout>
+            <LinearLayout
+                android:id="@+id/price_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rv_my_order_food_list"
+                android:layout_marginBottom="@dimen/default_padding"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="7.2"
+                    android:gravity="end"
+                    android:text="@string/text_total_amount" />
+
+                <TextView
+                    android:id="@+id/tv_total_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    tools:text="99" />
+
+                <TextView
+                    android:id="@+id/tv_total_amount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.8"
+                    android:gravity="center"
+                    tools:text="99999" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/offer_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price_container">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="7.2"
+                    android:gravity="end"
+                    android:text="@string/text_total_offer" />
+
+                <TextView
+                    android:id="@+id/tv_offer_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    tools:text="9000" />
+
+                <TextView
+                    android:id="@+id/tv_total_offer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.8"
+                    android:gravity="center"
+                    tools:text="99999" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/final_price_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/offer_container"
+                android:layout_marginBottom="@dimen/default_padding"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="7.2"
+                    android:gravity="end"
+                    android:text="@string/text_final_price" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginRight="@dimen/default_padding"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tv_final_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.8"
+                    android:gravity="center"
+                    tools:text="99999" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
