@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
@@ -20,11 +21,16 @@
                 android:id="@+id/share_food"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/ic_menu_share" />
+                android:layout_marginEnd="@dimen/small_padding"
+                android:layout_marginLeft="@dimen/default_padding"
+                android:layout_marginRight="@dimen/small_padding"
+                android:layout_marginStart="@dimen/default_padding"
+                android:background="@drawable/ic_menu_share"
+                android:contentDescription="@null"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_food_name"
@@ -34,10 +40,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/share_food"
-                android:padding="5dp"
-                android:text="Food Name"
+                android:layout_toStartOf="@+id/share_food"
+                android:padding="@dimen/small_padding"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Food Name" />
         </RelativeLayout>
 
         <ImageView
@@ -45,6 +52,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_below="@+id/top_panel"
+            android:contentDescription="@null"
             android:scaleType="centerCrop"
             android:tint="#50000000"
             android:tintMode="src_over" />
@@ -74,8 +82,12 @@
             android:layout_height="30dp"
             android:layout_alignBottom="@+id/iv_food"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="@dimen/default_padding"
             android:layout_marginRight="25dp"
+            android:layout_marginStart="@dimen/default_padding"
+            android:contentDescription="@null"
             android:padding="3dp"
             android:src="@drawable/heart_outline" />
 
@@ -84,32 +96,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/iv_food"
+            android:layout_toEndOf="@+id/iv_food"
             android:layout_toLeftOf="@+id/cb_sub_food"
             android:layout_toRightOf="@+id/iv_food"
+            android:layout_toStartOf="@+id/cb_sub_food"
             android:maxLines="3"
             android:padding="10dp"
-            android:text="Description"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Description" />
 
         <TextView
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/iv_food"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/controls"
             android:layout_toRightOf="@+id/controls"
-            android:gravity="right|center_vertical"
+            android:gravity="end|center_vertical"
             android:padding="10dp"
-            android:text="Price"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Price" />
 
         <RelativeLayout
             android:id="@+id/controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/iv_food"
+            android:layout_toEndOf="@+id/iv_food"
             android:layout_toRightOf="@+id/iv_food"
             android:background="#FFF"
             android:paddingBottom="5dp"
@@ -121,14 +138,16 @@
                 android:layout_height="28dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-
-                android:background="@drawable/remove_circle" />
+                android:background="@drawable/remove_circle"
+                android:contentDescription="@null" />
 
             <TextView
                 android:id="@+id/tv_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_toEndOf="@+id/iv_minus"
                 android:layout_toRightOf="@+id/iv_minus"
                 android:background="#20000002"
                 android:paddingBottom="5dp"
@@ -143,17 +162,22 @@
                 android:id="@+id/iv_plus"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_toEndOf="@+id/tv_count"
                 android:layout_toRightOf="@+id/tv_count"
-                android:background="@drawable/add_circle_black" />
+                android:background="@drawable/add_circle_black"
+                android:contentDescription="@null" />
         </RelativeLayout>
 
         <CheckBox
             android:id="@+id/cb_sub_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp" />
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

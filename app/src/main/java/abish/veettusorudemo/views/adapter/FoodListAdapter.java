@@ -17,9 +17,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -29,19 +26,13 @@ import java.util.List;
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
-import abish.veettusorudemo.constants.UrlConstants;
-import abish.veettusorudemo.network.GsonRequest;
-import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
-import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
 import abish.veettusorudemo.views.UserLoginControlActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static abish.veettusorudemo.Utils.hideLoader;
 
 /**
  * Main Food list Adapter
@@ -69,7 +60,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MyViewHolder)
             try {
-                ((MyViewHolder) holder).bind(position);
+                ((MyViewHolder) holder).bind(foodDetailList.get(position), position);
             } catch (Exception e) {
                 Log.e("Exception", e.getMessage());
             }
@@ -116,9 +107,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             ButterKnife.bind(this, itemView);
         }
 
-        private void bind(final int position) {
-            final FoodDetail foodDetailData = foodDetailList.get(position);
-
+        private void bind(final FoodDetail foodDetailData, final int position) {
             tvFoodName.setText(foodDetailData.getFoodName());
             OfferDetail offerDetail = !foodDetailData.getOfferDetails().isEmpty() ? foodDetailData.getOfferDetails().get(0) : null;
             StringBuilder actualPrice = new StringBuilder();
@@ -142,7 +131,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
                 tvPrice.setText(actualPrice.toString());
                 foodDetailData.setPriceAfterOffer(foodDetailData.getPrice());
             }
-            tvCount.setText("0");
+            tvCount.setText(foodDetailData.getSelectedFoodCount());
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
                 Picasso.with(context).load(foodDetailData.getFoodImageUrl()).into(ivFood,
@@ -171,6 +160,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             shareFood.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Utils.shareData(context, foodDetailData.getFoodImageUrl(), foodDetailData.getFoodShortName());
                     new AlertDialog.Builder(context)
                             .setMessage("Food Details will be shared in Social Media. Will be handled later on.")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -185,7 +175,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     if (mListener != null) {
                         Intent intent = new Intent(context, FoodDescriptionActivity.class);
-                        mListener.onLaunchActivity(foodDetailData, intent, false);
+                        mListener.onLaunchActivity(foodDetailData, position, intent, false);
                     }
                 }
             });
@@ -209,7 +199,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     final String userId = Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID);
                     if (userId != null && !userId.equals("null")) {
-                        updateFavourite(userId, foodDetailData);
+                        if (mListener != null) mListener.updateFavourite(userId, foodDetailData);
                     } else {
                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                         alertDialog.setMessage("Login to set favourite foods.");
@@ -235,7 +225,7 @@ public class FoodListAdapter extends RecyclerView.Adapter {
         private void setFoodCount(int count, FoodDetail foodDetailData) {
             int newCount = foodDetailData.getSelectedFoodCountNumber() + count;
 
-            if (newCount <= 0) {
+            if (newCount < 0) {
                 Snackbar.make(ivPlus, "Order atleast one to proceed", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else if (newCount > 10) {
@@ -247,33 +237,32 @@ public class FoodListAdapter extends RecyclerView.Adapter {
             }
         }
 
-        private void updateFavourite(String userID, final FoodDetail foodDetail) {
-            //TODO : Change hard coded values in UrlConstants
-            String url = UrlConstants.GET_FAV_FOOD_URL
-                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetail.getId()
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.MAIN_COURSE_TYPE;
-            Utils.displayLoader(context, "Updating Favourite...");
-
-            GsonRequest request = new GsonRequest<>(url, null,
-                    FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
-                @Override
-                public void onResponse(FoodFavouriteResponse response) {
-                    if (response.isSuccess()) {
-                        foodDetail.setFavourite(!foodDetail.isFavourite());
-                        notifier();
-                    }
-                    hideLoader();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d("Error: " + error.getMessage());
-                    hideLoader();
-                }
-            });
-            VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
-        }
+//        private void updateFavourite(String userID, final FoodDetail foodDetail) {
+//            String url = UrlConstants.GET_FAV_FOOD_URL
+//                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
+//                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetail.getId()
+//                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.MAIN_COURSE_TYPE;
+//            Utils.displayLoader(context, "Updating Favourite...");
+//
+//            GsonRequest request = new GsonRequest<>(url, null,
+//                    FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
+//                @Override
+//                public void onResponse(FoodFavouriteResponse response) {
+//                    if (response.isSuccess()) {
+//                        foodDetail.setFavourite(!foodDetail.isFavourite());
+//                        notifier();
+//                    }
+//                    hideLoader();
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    VolleyLog.d("Error: " + error.getMessage());
+//                    hideLoader();
+//                }
+//            });
+//            VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+//        }
     }
 
     private void notifier() {

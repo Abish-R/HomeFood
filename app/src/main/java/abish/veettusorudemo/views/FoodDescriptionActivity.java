@@ -7,6 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +33,7 @@ import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
+import abish.veettusorudemo.network.response.OfferDetail;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -99,7 +103,7 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         if (foodDetailData != null) {
             tvFoodName.setText(foodDetailData.getFoodName());
             tvCount.setText(foodDetailData.getSelectedFoodCount());
-            tvPrice.setText(foodDetailData.getPrice());
+            setPrice();
             tvDescription.setText(foodDetailData.getFullDescription());
 
             if (foodDetailData.isFavourite()) {
@@ -223,6 +227,32 @@ public class FoodDescriptionActivity extends AppCompatActivity {
         }
     }
 
+    private void setPrice(){
+        OfferDetail offerDetail = foodDetailData.getOfferDetails() != null &&
+                !foodDetailData.getOfferDetails().isEmpty() ? foodDetailData.getOfferDetails().get(0) : null;
+        StringBuilder actualPrice = new StringBuilder();
+        if (offerDetail != null) {
+            String offerPrice = !offerDetail.getOfferPrice().isEmpty() ? offerDetail.getOfferPrice() : null;
+            String offerPercentage = !offerDetail.getOfferPricePercentage().isEmpty() ? offerDetail.getOfferPricePercentage() : null;
+            int offerValueOnPercentage = offerPercentage != null ? Integer.parseInt(offerPercentage.substring(0, offerPercentage.length() - 1)) / 100 : 0;
+            int price = offerPrice != null ? Integer.parseInt(offerPrice) :
+                    (Integer.parseInt(foodDetailData.getPrice()) * offerValueOnPercentage);
+            String finalFoodPrice = String.valueOf(Integer.parseInt(foodDetailData.getPrice()) - price);
+            actualPrice.append("Price: ").append(foodDetailData.getPrice()).
+                    append(" ").append(finalFoodPrice);
+            int strikeTroughLength = actualPrice.length() - finalFoodPrice.length();
+            tvPrice.setText(actualPrice.toString(), TextView.BufferType.SPANNABLE);
+            Spannable spannable = (Spannable) tvPrice.getText();
+            spannable.setSpan(new StrikethroughSpan(), 7, strikeTroughLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            foodDetailData.setPriceAfterOffer(finalFoodPrice);
+        } else {
+            actualPrice.append("Price: ").append(foodDetailData.getPrice());
+            tvPrice.setText(actualPrice.toString());
+            foodDetailData.setPriceAfterOffer(foodDetailData.getPrice());
+        }
+    }
+
     private void setFoodCount(int count) {
         int newCount = Integer.parseInt(tvCount.getText().toString()) + count;
         if (newCount < 0) {
@@ -232,6 +262,7 @@ public class FoodDescriptionActivity extends AppCompatActivity {
             Snackbar.make(ivPlus, "You can order max 10, Contact directly, see 'About Us' page.", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         } else {
+            foodDetailData.setSelectedFoodCount(newCount);
             tvCount.setText(String.valueOf(newCount));
         }
     }

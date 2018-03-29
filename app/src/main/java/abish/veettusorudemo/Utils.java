@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.network.response.LoginResponse;
@@ -43,7 +45,7 @@ public class Utils {
         }
     }
 
-    public static void hideLoader(){
+    public static void hideLoader() {
         if (pDialog != null && pDialog.isShowing()) {
             pDialog.hide();
             pDialog.cancel();
@@ -64,10 +66,10 @@ public class Utils {
     }
 
     public static void alertOkCancelMessage(Context mContext, String message,
-                                                   DialogInterface cancel, DialogInterface ok) {
+                                            DialogInterface cancel, DialogInterface ok) {
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setMessage(message);
-        if(cancel != null) {
+        if (cancel != null) {
             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -99,10 +101,10 @@ public class Utils {
         editor.apply();
     }
 
-    public static String getSavedUserDetail(Context context, String detail){
+    public static String getSavedUserDetail(Context context, String detail) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.LOGIN_ADUPANKARAI_PREF, MODE_PRIVATE);
 
-        switch (detail){
+        switch (detail) {
             case Constants.LOGIN_USER_ID:
                 return prefs.getString(Constants.LOGIN_USER_ID, "null");
             case Constants.LOGIN_NAME:
@@ -116,5 +118,16 @@ public class Utils {
             default:
                 return "null";
         }
+    }
+
+    public static void shareData(Context context, String url, String text) {
+        Uri imageUri = Uri.parse(url);
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/png");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(shareIntent, "send"));
     }
 }

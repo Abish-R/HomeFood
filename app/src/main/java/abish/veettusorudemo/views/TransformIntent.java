@@ -11,5 +11,7 @@ import abish.veettusorudemo.network.response.FoodDetail;
 
 public interface TransformIntent {
 
-    void onLaunchActivity(FoodDetail foodDetail, Intent intent, boolean needFinishActivity);
+    void onLaunchActivity(FoodDetail foodDetail, int position, Intent intent, boolean needFinishActivity);
+
+    void updateFavourite(String userID, final FoodDetail foodDetail);
 }

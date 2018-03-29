@@ -19,9 +19,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -30,11 +27,7 @@ import java.util.List;
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
-import abish.veettusorudemo.constants.UrlConstants;
-import abish.veettusorudemo.network.GsonRequest;
-import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
-import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
@@ -43,7 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static abish.veettusorudemo.R.id.progress_bar;
-import static abish.veettusorudemo.Utils.hideLoader;
 
 /**
  * Created by Abish on 19/02/2017.
@@ -193,7 +185,7 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     if (mListener != null) {
                         Intent intent = new Intent(context, FoodDescriptionActivity.class);
-                        mListener.onLaunchActivity(foodDetail, intent, false);
+                        mListener.onLaunchActivity(foodDetail, position, intent, false);
                     }
                 }
             });
@@ -217,7 +209,7 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     final String userId = Utils.getSavedUserDetail(context, Constants.LOGIN_USER_ID);
                     if (userId != null && !userId.equals("null")) {
-                        updateFavourite(userId, subCourseList.get(position));
+                        if (mListener != null) mListener.updateFavourite(userId, foodDetail);
                     } else {
                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                         alertDialog.setMessage("Login to set favourite foods.");
@@ -263,40 +255,39 @@ public class SubFoodListAdapter extends RecyclerView.Adapter {
             notifier();
         }
 
-        private void updateFavourite(String userID, final FoodDetail foodDetailData) {
-            //TODO : Change hard coded values in UrlConstants
-            String url = UrlConstants.GET_FAV_FOOD_URL
-                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
-                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.SUB_COURSE_TYPE;
-            Utils.displayLoader(context, "Updating Favourite...");
-
-            GsonRequest request = new GsonRequest<>(url, null,
-                    FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
-                @Override
-                public void onResponse(FoodFavouriteResponse response) {
-                    if (response.isSuccess()) {
-                        foodDetailData.setFavourite(!foodDetailData.isFavourite());
-//                        if (!foodDetailData.isFavourite()) {
-//                            foodDetailData.setFavourite(true);
-//                            ivFavourite.setImageResource(R.drawable.heart_filled);
-//                        } else {
-//                            foodDetailData.setFavourite(false);
-//                            ivFavourite.setImageResource(R.drawable.heart_outline);
-//                        }
-                        notifier();
-                    }
-                    hideLoader();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d("Error: " + error.getMessage());
-                    hideLoader();
-                }
-            });
-            VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
-        }
+//        private void updateFavourite(String userID, final FoodDetail foodDetailData) {
+//            String url = UrlConstants.GET_FAV_FOOD_URL
+//                    + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
+//                    + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetailData.getId()
+//                    + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.SUB_COURSE_TYPE;
+//            Utils.displayLoader(context, "Updating Favourite...");
+//
+//            GsonRequest request = new GsonRequest<>(url, null,
+//                    FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
+//                @Override
+//                public void onResponse(FoodFavouriteResponse response) {
+//                    if (response.isSuccess()) {
+//                        foodDetailData.setFavourite(!foodDetailData.isFavourite());
+////                        if (!foodDetailData.isFavourite()) {
+////                            foodDetailData.setFavourite(true);
+////                            ivFavourite.setImageResource(R.drawable.heart_filled);
+////                        } else {
+////                            foodDetailData.setFavourite(false);
+////                            ivFavourite.setImageResource(R.drawable.heart_outline);
+////                        }
+//                        notifier();
+//                    }
+//                    hideLoader();
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    VolleyLog.d("Error: " + error.getMessage());
+//                    hideLoader();
+//                }
+//            });
+//            VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
+//        }
     }
 
     private void notifier() {

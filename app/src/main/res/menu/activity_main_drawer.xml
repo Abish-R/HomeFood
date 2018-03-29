@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_list_foods"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@mipmap/ic_food"
             android:title="List Foods" />
         <item
             android:id="@+id/nav_orders"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_orders"
             android:title="Orders" />
         <item
             android:id="@+id/nav_favourites"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@mipmap/ic_fav"
             android:title="Favourites" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@mipmap/settings"
             android:title="Settings" />
     </group>
 
@@ -24,24 +24,24 @@
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@mipmap/ic_share"
                 android:title="Share" />
             <item
                 android:id="@+id/nav_enquiry"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@mipmap/ic_enquiry"
                 android:title="Enquiry" />
         </menu>
     </item>
 
     <group android:checkableBehavior="single">
-    <item
-        android:id="@+id/nav_about_us"
-        android:icon="@drawable/ic_menu_camera"
-        android:title="About Us" />
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_menu_camera"
-        android:title="Logout" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@mipmap/ic_faq"
+            android:title="About Us" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@mipmap/ic_logout"
+            android:title="Logout" />
     </group>
 
 </menu>

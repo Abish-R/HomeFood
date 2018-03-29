@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import abish.veettusorudemo.R;
+import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.FoodListResponse;
 import abish.veettusorudemo.views.adapter.SubFoodListAdapter;
 import butterknife.BindView;
@@ -229,8 +231,9 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     }
 
     @Override
-    public void onLaunchActivity(FoodDetail foodDetail, Intent intent, boolean needFinishActivity) {
+    public void onLaunchActivity(FoodDetail foodDetail, int position, Intent intent, boolean needFinishActivity) {
         intent.putExtra(Constants.SELECTED_FOOD, foodDetail);
+        foodDetailList.get(position).setSelectedFoodCount(foodDetail.getSelectedFoodCountNumber());
         if (needFinishActivity) {
             startActivity(intent);
             finish();
@@ -239,6 +242,34 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             startActivity(intent);
             overridePendingTransitionEnter();
         }
+    }
+
+    @Override
+    public void updateFavourite(String userID, final FoodDetail foodDetail) {
+        String url = UrlConstants.GET_FAV_FOOD_URL
+                + UrlConstants.FAV_FOOD_PARAM_USER_ID + userID
+                + UrlConstants.FAV_FOOD_PARAM_COURSE_ID + foodDetail.getId()
+                + UrlConstants.FAV_FOOD_PARAM_COURSE_TYPE + Constants.MAIN_COURSE_TYPE;
+        Utils.displayLoader(this, "Updating Favourite...");
+
+        GsonRequest request = new GsonRequest<>(url, null,
+                FoodFavouriteResponse.class, null, new Response.Listener<FoodFavouriteResponse>() {
+            @Override
+            public void onResponse(FoodFavouriteResponse response) {
+                if (response.isSuccess()) {
+                    foodDetail.setFavourite(!foodDetail.isFavourite());
+                    if (mAdapter != null) mAdapter.notifyDataSetChanged();
+                }
+                hideLoader();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Error: " + error.getMessage());
+                hideLoader();
+            }
+        });
+        VolleyApiClient.getInstance().addToRequestQueue(request, "Food Categories");
     }
 
     /**
