@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import abish.veettusorudemo.R;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

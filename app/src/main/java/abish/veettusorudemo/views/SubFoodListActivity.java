@@ -1,9 +1,7 @@
 package abish.veettusorudemo.views;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,20 +25,18 @@ import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.FoodListResponse;
 import abish.veettusorudemo.views.adapter.SubFoodListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static abish.veettusorudemo.Utils.displayLoader;
 import static abish.veettusorudemo.Utils.hideLoader;
 
 public class SubFoodListActivity extends AppCompatActivity implements TransformIntent {
-    private SubFoodListAdapter mAdapter;
-    private List<FoodDetail> foodDetailList = new ArrayList<>();
-    private String mainCourseId = "";
 
     @BindView(R.id.bt_continue)
     Button btContinue;
@@ -66,6 +62,8 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     private List<FoodDetail> subCourseList = new ArrayList<>();
     private ArrayList<FoodDetail> selectedFoodDetailList;
     private String foodCategoryId;
+    private SubFoodListAdapter mAdapter;
+    private String mainCourseId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,64 +95,11 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             mainCourseId = stringBuilder.toString();
             getSubDishList();
         }
-
-        btContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(SubFoodListActivity.this)
-                        .setMessage("If you finished purchasing press Ok. To continue purchase press Cancel.")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                                overridePendingTransitionExit();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        }).show();
-            }
-        });
-
-        btPlaceOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(SubFoodListActivity.this)
-                        .setMessage("Your order is placed successfully. Few more steps to confirm again!")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                goToALLORderCheckScreen();
-                            }
-                        }).show();
-            }
-        });
-    }
-
-    public void noFoodAction(View view) {
-        onBackPressed();
-    }
-
-    public void retryFood(View view) {
-        getSubDishList();
-    }
-
-    private void goToALLORderCheckScreen() {
-        for (FoodDetail subFoodList : subCourseList) {
-            if (subFoodList.isChecked()) {
-                subFoodList.setFoodCategoryId(Constants.SUB_COURSE_TYPE);
-                selectedFoodDetailList.add(subFoodList);
-            }
-        }
-        Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
-        intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
-        intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
-        startActivity(intent);
-        finish();
     }
 
     @Override
     public void onBackPressed() {
-        finish();
+        super.onBackPressed();
         overridePendingTransitionExit();
     }
 
@@ -174,6 +119,89 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             return true;
         }
         return false;
+    }
+
+    @OnClick(R.id.bt_continue)
+    public void onContinuePressed() {
+        Utils.alertMessage(new AlertDialogListener() {
+                               @Override
+                               public void onOkClick() {
+                                   finish();
+                                   overridePendingTransitionExit();
+                               }
+
+                               @Override
+                               public void onCancelClick() {
+                                   // Do Nothing
+                               }
+                           }, SubFoodListActivity.this
+                , getString(R.string.sub_food_selection_done_message)
+                , getString(R.string.text_yes), getString(R.string.text_no));
+
+    }
+
+    @OnClick(R.id.bt_place_order)
+    public void onPlaceOrderPressed() {
+        Utils.alertMessage(new AlertDialogListener() {
+                               @Override
+                               public void onOkClick() {
+                                   goToALLOrderCheckScreen();
+                               }
+
+                               @Override
+                               public void onCancelClick() {
+                                   // Do Nothing
+                               }
+                           }, SubFoodListActivity.this
+                , getString(R.string.sub_food_order_done_message)
+                , getString(R.string.text_ok), null);
+    }
+
+    public void noFoodAction(View view) {
+        onBackPressed();
+    }
+
+    public void retryFood(View view) {
+        getSubDishList();
+    }
+
+    private void goToALLOrderCheckScreen() {
+        int totalMainFood = 0;
+        int totalSubFoodFree = 0;
+        boolean isFreeSelectionExceed = false;
+        ArrayList<FoodDetail> selectedSubFoodList = new ArrayList<>();
+        for (FoodDetail mainFoodItem : selectedFoodDetailList) {
+            totalMainFood += mainFoodItem.getSelectedFoodCountNumber();
+        }
+        for (FoodDetail subFoodList : subCourseList) {
+            if (subFoodList.isChecked()) {
+                subFoodList.setFoodCategoryId(Constants.SUB_COURSE_TYPE);
+                selectedSubFoodList.add(subFoodList);
+            }
+            if (subFoodList.isChecked() && subFoodList.isReallyFree()) {
+                totalSubFoodFree += subFoodList.getSelectedFoodCountNumber();
+            }
+            if (totalMainFood < totalSubFoodFree) {
+                isFreeSelectionExceed = true;
+                break;
+            }
+        }
+        if (isFreeSelectionExceed) {
+            extraFreeFoodSelectionAlert();
+        } else {
+            selectedFoodDetailList.addAll(selectedSubFoodList);
+            Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
+            intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
+            intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void extraFreeFoodSelectionAlert() {
+        Utils.alertMessage(SubFoodListActivity.this
+                , getString(R.string.free_sub_food_extra_selection_message)
+                , getString(R.string.text_ok), getString(R.string.text_cancel));
     }
 
     private void getSubDishList() {
@@ -226,14 +254,14 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             btNoFood.setVisibility(View.VISIBLE);
             btRetry.setVisibility(View.GONE);
         }
-        foodDetailList.clear();
+        subCourseList.clear();
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLaunchActivity(FoodDetail foodDetail, int position, Intent intent, boolean needFinishActivity) {
         intent.putExtra(Constants.SELECTED_FOOD, foodDetail);
-        foodDetailList.get(position).setSelectedFoodCount(foodDetail.getSelectedFoodCountNumber());
+        subCourseList.get(position).setSelectedFoodCount(foodDetail.getSelectedFoodCountNumber());
         if (needFinishActivity) {
             startActivity(intent);
             finish();

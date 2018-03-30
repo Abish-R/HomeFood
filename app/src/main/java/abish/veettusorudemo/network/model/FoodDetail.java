@@ -1,4 +1,4 @@
-package abish.veettusorudemo.network.response;
+package abish.veettusorudemo.network.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

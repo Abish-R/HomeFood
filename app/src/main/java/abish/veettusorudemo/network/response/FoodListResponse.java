@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 import abish.veettusorudemo.model.ResponseSuccessFinder;
+import abish.veettusorudemo.network.model.FoodDetail;
 
 /**
  * Created by Abish on 9/4/2017.

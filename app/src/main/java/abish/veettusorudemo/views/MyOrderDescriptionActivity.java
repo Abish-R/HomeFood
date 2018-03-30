@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -86,6 +87,21 @@ public class MyOrderDescriptionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransitionExit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+
     private void setDataInViews() {
         tvNameUser.setText(myOrdersListItem.getNameUser());
         tvPhone.setText(myOrdersListItem.getPhone());
@@ -96,5 +112,12 @@ public class MyOrderDescriptionActivity extends AppCompatActivity {
         tvTotalAmount.setText(myOrdersListItem.getTotalAmount());
         tvTotalOffer.setText(myOrdersListItem.getDiscountAmount());
         tvFinalPrice.setText(myOrdersListItem.getFinalAmount());
+    }
+
+    /**
+     * Overrides the pending Activity transition by performing the "Exit" animation.
+     */
+    protected void overridePendingTransitionExit() {
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 }

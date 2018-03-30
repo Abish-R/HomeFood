@@ -26,8 +26,8 @@ import java.util.List;
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
-import abish.veettusorudemo.network.response.FoodDetail;
-import abish.veettusorudemo.network.response.OfferDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
+import abish.veettusorudemo.network.model.OfferDetail;
 import abish.veettusorudemo.views.FoodDescriptionActivity;
 import abish.veettusorudemo.views.TransformIntent;
 import abish.veettusorudemo.views.UserLoginControlActivity;
@@ -43,12 +43,15 @@ public class FoodListAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     private List<FoodDetail> foodDetailList = new ArrayList<>();
     private TransformIntent mListener;
+    private boolean isMyFavScreen;
 
-    public FoodListAdapter(Context context, List<FoodDetail> foodDetailList, TransformIntent listener) {
+    public FoodListAdapter(Context context, List<FoodDetail> foodDetailList,
+                           TransformIntent listener, boolean isMyFavScreen) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.foodDetailList = foodDetailList;
         this.mListener = listener;
+        this.isMyFavScreen = isMyFavScreen;
     }
 
     @Override
@@ -131,7 +134,13 @@ public class FoodListAdapter extends RecyclerView.Adapter {
                 tvPrice.setText(actualPrice.toString());
                 foodDetailData.setPriceAfterOffer(foodDetailData.getPrice());
             }
-            tvCount.setText(foodDetailData.getSelectedFoodCount());
+            if (isMyFavScreen) {
+                ivPlus.setVisibility(View.GONE);
+                ivMinus.setVisibility(View.GONE);
+                tvCount.setVisibility(View.GONE);
+            } else {
+                tvCount.setText(foodDetailData.getSelectedFoodCount());
+            }
 
             if (!foodDetailData.getFoodImageUrl().isEmpty()) {
                 Picasso.with(context).load(foodDetailData.getFoodImageUrl()).into(ivFood,

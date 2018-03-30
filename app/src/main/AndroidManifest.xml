@@ -74,6 +74,9 @@
         <activity
             android:name=".views.MyOrderDescriptionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".views.MyFavFoodActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

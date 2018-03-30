@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -75,6 +76,15 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransitionExit();
@@ -126,6 +136,13 @@ public class MyOrdersActivity extends AppCompatActivity implements MyOrdersListA
         Intent intent = new Intent(this, MyOrderDescriptionActivity.class);
         intent.putExtra(Constants.MY_ORDER_DATA, myOrderItem);
         startActivity(intent);
+    }
+
+    /**
+     * Overrides the pending Activity transition by performing the "Enter" animation.
+     */
+    protected void overridePendingTransitionEnter() {
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
     }
 
     /**

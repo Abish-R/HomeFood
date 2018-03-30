@@ -31,9 +31,9 @@ import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
-import abish.veettusorudemo.network.response.OfferDetail;
+import abish.veettusorudemo.network.model.OfferDetail;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

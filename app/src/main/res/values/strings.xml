@@ -3,7 +3,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_splash">HomeFood</string>
@@ -22,6 +21,13 @@
     <string name="title_total_order">Total Orders</string>
     <string name="title_my_orders">My Orders</string>
     <string name="title_my_order">My Order</string>
+    <string name="title_my_fav_food">My Favourite Foods</string>
+
+
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="text_ok">@android:string/ok</string>
+    <string name="text_cancel">@android:string/cancel</string>
 
     <string name="text_name">Name</string>
     <string name="text_username">Username</string>
@@ -79,4 +85,10 @@
     <string name="text_total">Total</string>
     <string name="text_total_offer">Total Offer</string>
     <string name="text_final_price">Final Price</string>
+
+    // Messages
+    <string name="not_login_message">You are not Logged In.</string>
+    <string name="sub_food_selection_done_message">If you finished purchasing press \"Yes\". To continue purchase press "No\".</string>
+    <string name="sub_food_order_done_message">Your order is placed successfully. Few more steps to confirm again!</string>
+    <string name="free_sub_food_extra_selection_message">You are supposed to select max 1 free food per Main course. You are charged for extra selection of free food.\n\nTo avoid charges press \"Cancel\" and change free food option or quantity.</string>
 </resources>

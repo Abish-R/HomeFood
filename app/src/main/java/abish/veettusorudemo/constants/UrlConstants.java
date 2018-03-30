@@ -2,6 +2,7 @@ package abish.veettusorudemo.constants;
 
 /**
  * Created by Abish on 8/12/2017.
+ * </p>
  */
 
 public class UrlConstants {
@@ -19,6 +20,7 @@ public class UrlConstants {
     public static String GET_ADDRESS_DELETE_URL = BASE_URL + "deletetemproryaddress.php";
     public static String SEND_ORDERS_URL = BASE_URL + "addOrder.php?";
     public static String GET_USER_ORDERS_URL = BASE_URL + "get_user_orders.php?";
+    public static String GET_MY_FAV_FOOD_URL = BASE_URL + "all_favorite.php";
 
     //Url Params
     public static String MAIN_FOOD_PARAM_FOOD_CATEGORY = "?food_category=";
@@ -43,12 +45,10 @@ public class UrlConstants {
     public static String LOGIN_PARAM_PASSWORD = "&password=";
     public static String LOGIN_PARAM_DEVICE_TOKEN = "&deviceToken=";
 
-    //TODO - Change the hardcoded values
     public static String FAV_FOOD_PARAM_USER_ID = "?user_id=";
     public static String FAV_FOOD_PARAM_COURSE_ID = "&course_id=";
     public static String FAV_FOOD_PARAM_COURSE_TYPE = "&course_type=";
 
-    //TODO - Change the hardcoded values
     public static String ADDRESS_USER_ID = "?user_id=";
     public static String ADDRESS_CATEGORY_ID = "&category_id=";
 

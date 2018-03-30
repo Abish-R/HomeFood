@@ -2,7 +2,7 @@ package abish.veettusorudemo.views;
 
 import android.content.Intent;
 
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 
 /**
  * Created by Abish on 10/8/2017.

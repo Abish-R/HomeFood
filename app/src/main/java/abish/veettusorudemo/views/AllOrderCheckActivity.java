@@ -18,7 +18,7 @@ import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.network.model.OrderData;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 import abish.veettusorudemo.views.adapter.AllOrderCheckListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;

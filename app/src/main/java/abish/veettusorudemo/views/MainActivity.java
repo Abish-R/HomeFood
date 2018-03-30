@@ -34,7 +34,7 @@ import abish.veettusorudemo.constants.UrlConstants;
 import abish.veettusorudemo.network.GsonRequest;
 import abish.veettusorudemo.network.VolleyApiClient;
 import abish.veettusorudemo.network.model.FoodCategory;
-import abish.veettusorudemo.network.response.FoodDetail;
+import abish.veettusorudemo.network.model.FoodDetail;
 import abish.veettusorudemo.network.response.FoodFavouriteResponse;
 import abish.veettusorudemo.network.response.FoodListResponse;
 import abish.veettusorudemo.views.adapter.FoodListAdapter;
@@ -47,6 +47,12 @@ import static abish.veettusorudemo.Utils.hideLoader;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         TransformIntent, ActivityFoodDetailUpdater.ActivityRefresh {
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
 
     @BindView(R.id.delivery_timing)
     TextView deliveryTiming;
@@ -66,6 +72,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.bt_retry)
     Button btRetry;
 
+    private TextView nameOfUser;
+    private TextView tvContact;
+
     private FoodCategory foodCategoryData;
     private String foodCategoryID;
     private String foodCategory;
@@ -81,6 +90,10 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setTitle();
 
+        View header = navigationView.getHeaderView(0);
+        nameOfUser = header.findViewById(R.id.tv_name);
+        tvContact = header.findViewById(R.id.tv_contact);
+
         foodListRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(Constants.SELECTED_FOOD_CATEGORY) != null) {
@@ -89,11 +102,12 @@ public class MainActivity extends AppCompatActivity
                 foodCategoryID = foodCategoryData.getId();
                 foodCategory = foodCategoryData.getCategoryName();
                 foodCategoryTiming = foodCategoryData.getOrderTiming();
-                deliveryTiming.setText("For party, make your order by " + foodCategoryTiming + " of same day");
+                String deliveryMessage = "For " + foodCategory + ", make your order by " + foodCategoryTiming + " of same day";
+                deliveryTiming.setText(deliveryMessage);
             }
         }
 
-        mAdapter = new FoodListAdapter(this, foodDetailList, this);
+        mAdapter = new FoodListAdapter(this, foodDetailList, this, false);
         foodListRecycler.setAdapter(mAdapter);
 
         getMainDishList();
@@ -119,15 +133,23 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
+
+        if (Utils.getSavedUserDetail(this, Constants.LOGIN_USER_ID).equals("null")) {
+            nameOfUser.setText(R.string.not_login_message);
+            tvContact.setText("");
+        } else {
+            nameOfUser.setText(Utils.getSavedUserDetail(this, Constants.LOGIN_NAME));
+            String contact = Utils.getSavedUserDetail(this, Constants.LOGIN_EMAIL)
+                    + "\n" + Utils.getSavedUserDetail(this, Constants.LOGIN_MOBILE);
+            tvContact.setText(contact);
+        }
     }
 
     @Override
@@ -258,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_orders) {
             startActivity(new Intent(this, MyOrdersActivity.class));
         } else if (id == R.id.nav_favourites) {
-
+            startActivity(new Intent(this, MyFavFoodActivity.class));
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_share) {

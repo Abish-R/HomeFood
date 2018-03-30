@@ -11,6 +11,7 @@ import android.net.Uri;
 
 import abish.veettusorudemo.constants.Constants;
 import abish.veettusorudemo.network.response.LoginResponse;
+import abish.veettusorudemo.views.AlertDialogListener;
 
 import static abish.veettusorudemo.constants.Constants.FCM_TOKEN;
 import static abish.veettusorudemo.constants.Constants.LOGIN_USER_ID;
@@ -65,24 +66,49 @@ public class Utils {
         alertDialog.show();
     }
 
-    public static void alertOkCancelMessage(Context mContext, String message,
-                                            DialogInterface cancel, DialogInterface ok) {
+    public static void alertMessage(Context mContext, String message,
+                                    String button1, String button2) {
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setMessage(message);
-        if (cancel != null) {
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, button1,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        if (button2 != null) {
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, button2,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
         }
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.show();
+    }
+
+    public static void alertMessage(final AlertDialogListener listener, Context mContext, String message,
+                                    String button1, String button2) {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setMessage(message);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, button1,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        listener.onOkClick();
                     }
                 });
+        if (button2 != null) {
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, button2,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            listener.onCancelClick();
+                        }
+                    });
+        }
         alertDialog.show();
     }
 
