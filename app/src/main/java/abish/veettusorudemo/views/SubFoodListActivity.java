@@ -183,6 +183,7 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             }
             if (totalMainFood < totalSubFoodFree) {
                 isFreeSelectionExceed = true;
+                subFoodList.setExtraFreeFoodCount(totalSubFoodFree - totalMainFood);
                 break;
             }
         }

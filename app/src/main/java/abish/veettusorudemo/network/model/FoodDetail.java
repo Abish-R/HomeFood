@@ -69,6 +69,7 @@ public class FoodDetail implements Parcelable {
     private transient boolean isChecked;
     private transient int priceAfterOffer;
     private transient String isReallyFree;
+    private transient int extraFreeFoodCount;
 
     public FoodDetail() {
     }
@@ -261,6 +262,18 @@ public class FoodDetail implements Parcelable {
 
     public void setFreeFood(String freeFood) {
         this.freeFood = freeFood;
+    }
+
+    public String getExtraFreeFoodCountString() {
+        return extraFreeFoodCount + "";
+    }
+
+    public int getExtraFreeFoodCount() {
+        return extraFreeFoodCount;
+    }
+
+    public void setExtraFreeFoodCount(int extraFreeFoodCount) {
+        this.extraFreeFoodCount = extraFreeFoodCount ;
     }
 
     public boolean isFreeFood() {
