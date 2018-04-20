@@ -1,6 +1,5 @@
 package abish.veettusorudemo.views;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,11 +7,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -284,11 +283,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_share) {
-
+            shareAppLink();
         } else if (id == R.id.nav_enquiry) {
 
         } else if (id == R.id.nav_about_us) {
-
+            startActivity(new Intent(this, AboutUsActivity.class));
         } else if (id == R.id.nav_logout) {
 
         }
@@ -298,14 +297,24 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void shareAppLink() {
+        try {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, "My Home Food App");
+            String sAux = "\nRecommending you this application to get real home food.\n\n";
+            sAux = sAux + "https://play.google.com/store/apps/details?id=com.whatsapp \n\n";
+            i.putExtra(Intent.EXTRA_TEXT, sAux);
+            startActivity(Intent.createChooser(i, "Choose to share"));
+        } catch (Exception e) {
+            Log.e("Exception", e + "");
+        }
+    }
+
     private void alertFoodAtLeastOne() {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage("Select at least one Food to proceed further!")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                    }
-                }).show();
+        Utils.alertOkMessage(MainActivity.this,
+                "Select at least one Food to proceed further!",
+                "Ok");
     }
 
     @Override

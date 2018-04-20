@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,12 +15,21 @@
         <include layout="@layout/action_bar" />
     </android.support.v7.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/tv_free_food_info"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:padding="@dimen/default_padding"
+        android:visibility="gone" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/delivery_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bt_order"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/tv_free_food_info"
         android:layout_margin="@dimen/default_padding" />
 
     <Button

@@ -77,6 +77,7 @@
         <activity
             android:name=".views.MyFavFoodActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".views.AboutUsActivity"></activity>
     </application>
 
 </manifest>

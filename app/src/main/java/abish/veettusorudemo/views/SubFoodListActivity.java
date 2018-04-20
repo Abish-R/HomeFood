@@ -168,6 +168,7 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
     private void goToALLOrderCheckScreen() {
         int totalMainFood = 0;
         int totalSubFoodFree = 0;
+        int oneFreeFoodAmount = 0;
         boolean isFreeSelectionExceed = false;
         ArrayList<FoodDetail> selectedSubFoodList = new ArrayList<>();
         for (FoodDetail mainFoodItem : selectedFoodDetailList) {
@@ -180,27 +181,45 @@ public class SubFoodListActivity extends AppCompatActivity implements TransformI
             }
             if (subFoodList.isChecked() && subFoodList.isReallyFree()) {
                 totalSubFoodFree += subFoodList.getSelectedFoodCountNumber();
+                oneFreeFoodAmount = subFoodList.getPriceAfterOffer();
             }
             if (totalMainFood < totalSubFoodFree) {
                 isFreeSelectionExceed = true;
                 subFoodList.setExtraFreeFoodCount(totalSubFoodFree - totalMainFood);
-                break;
+                //break;
             }
         }
         if (isFreeSelectionExceed) {
-            extraFreeFoodSelectionAlert();
+            extraFreeFoodSelectionAlert(totalMainFood, totalSubFoodFree, oneFreeFoodAmount, selectedSubFoodList);
         } else {
-            selectedFoodDetailList.addAll(selectedSubFoodList);
-            Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
-            intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
-            intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
-            startActivity(intent);
-            finish();
+            goToAllOrderCheckActivity(totalMainFood, totalSubFoodFree, oneFreeFoodAmount, selectedSubFoodList);
         }
     }
 
-    private void extraFreeFoodSelectionAlert() {
-        Utils.alertMessage(SubFoodListActivity.this
+    private void goToAllOrderCheckActivity(int totalMainFood, int totalSubFoodFree, int oneFreeFoodAmount, ArrayList<FoodDetail> selectedSubFoodList) {
+        selectedFoodDetailList.addAll(selectedSubFoodList);
+        Intent intent = new Intent(SubFoodListActivity.this, AllOrderCheckActivity.class);
+        intent.putParcelableArrayListExtra(Constants.ALL_SELECTED_FOOD_LIST, selectedFoodDetailList);
+        intent.putExtra(Constants.SELECTED_FOOD_CATEGORY_ID, foodCategoryId);
+        intent.putExtra(Constants.FREE_SUB_FOOD_PRICE, oneFreeFoodAmount);
+        intent.putExtra(Constants.EXTRA_FREE_SUB_FOOD_COUNT, totalSubFoodFree - totalMainFood);
+        startActivity(intent);
+        finish();
+    }
+
+    private void extraFreeFoodSelectionAlert(final int totalMainFood, final int totalSubFoodFree,
+                                             final int oneFreeFoodAmount, final ArrayList<FoodDetail> selectedSubFoodList) {
+        Utils.alertMessage(new AlertDialogListener() {
+                               @Override
+                               public void onOkClick() {
+                                   goToAllOrderCheckActivity(totalMainFood, totalSubFoodFree, oneFreeFoodAmount, selectedSubFoodList);
+                               }
+
+                               @Override
+                               public void onCancelClick() {
+
+                               }
+                           }, SubFoodListActivity.this
                 , getString(R.string.free_sub_food_extra_selection_message)
                 , getString(R.string.text_ok), getString(R.string.text_cancel));
     }

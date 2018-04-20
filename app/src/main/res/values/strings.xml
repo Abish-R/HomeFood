@@ -22,6 +22,7 @@
     <string name="title_my_orders">My Orders</string>
     <string name="title_my_order">My Order</string>
     <string name="title_my_fav_food">My Favourite Foods</string>
+    <string name="title_about_us">About us</string>
 
 
     <string name="text_yes">Yes</string>
@@ -91,4 +92,5 @@
     <string name="sub_food_selection_done_message">If you finished purchasing press \"Yes\". To continue purchase press "No\".</string>
     <string name="sub_food_order_done_message">Your order is placed successfully. Few more steps to confirm again!</string>
     <string name="free_sub_food_extra_selection_message">You are supposed to select max 1 free food per Main course. You are charged for extra selection of free food.\n\nTo avoid charges press \"Cancel\" and change free food option or quantity.</string>
+    <string name="know_about_us">Know about us</string>
 </resources>

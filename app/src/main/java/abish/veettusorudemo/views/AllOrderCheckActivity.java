@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import abish.veettusorudemo.R;
 import abish.veettusorudemo.Utils;
 import abish.veettusorudemo.constants.Constants;
-import abish.veettusorudemo.network.model.OrderData;
 import abish.veettusorudemo.network.model.FoodDetail;
+import abish.veettusorudemo.network.model.OrderData;
 import abish.veettusorudemo.views.adapter.AllOrderCheckListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,12 +34,17 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
     @BindView(R.id.bt_order)
     Button btOrder;
 
+    @BindView(R.id.tv_free_food_info)
+    TextView tvFreeFoodInfo;
+
     @BindView(R.id.delivery_recycler_view)
     RecyclerView deliveryRecyclerView;
 
     private ArrayList<FoodDetail> selectedFoodDetailList;
     private AllOrderCheckListAdapter mAdapter;
     private String foodCategoryId;
+    int oneFreeFoodAmount = 0;
+    int extraFreeFoodCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,14 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
         if (bundle != null) {
             selectedFoodDetailList = bundle.getParcelableArrayList(Constants.ALL_SELECTED_FOOD_LIST);
             foodCategoryId = getIntent().getExtras().getString(Constants.SELECTED_FOOD_CATEGORY_ID);
+            oneFreeFoodAmount = getIntent().getExtras().getInt(Constants.FREE_SUB_FOOD_PRICE);
+            extraFreeFoodCount = getIntent().getExtras().getInt(Constants.EXTRA_FREE_SUB_FOOD_COUNT);
+        }
+
+        if (oneFreeFoodAmount != 0 && extraFreeFoodCount != 0) {
+            tvFreeFoodInfo.setVisibility(View.VISIBLE);
+            tvFreeFoodInfo.setText("You have selected extra " + extraFreeFoodCount +
+                    "nos of free food, Additionally Rs. " + oneFreeFoodAmount + " is added with your total.");
         }
 
         if (selectedFoodDetailList != null) {
@@ -71,6 +84,7 @@ public class AllOrderCheckActivity extends AppCompatActivity implements AllOrder
                 totalPayable += foodDetail.getPriceAfterOffer() * foodDetail.getSelectedFoodCountNumber();
             }
         }
+        totalPayable += oneFreeFoodAmount * extraFreeFoodCount;
         btOrder.setText(getString(R.string.text_order, " Rs. " + totalPayable));
     }
 
